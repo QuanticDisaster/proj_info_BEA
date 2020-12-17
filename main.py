@@ -16,7 +16,12 @@ from Obj import Obj
 
 def main():
 
-    video_filename = r"D:\Mes documents\_PPMD\Projet informatique BEA\donnees_BEA\parachute.mp4"
+    video_filename = r"D:\Mes documents\_PPMD\Projet informatique BEA\local\donnees\donnees_BEA\parachute.mp4"
+
+    import os.path
+    if not os.path.isfile(video_filename):
+        print("File not found")
+        raise
 
 
     videoObj = Video("video1", video_filename)
@@ -24,17 +29,11 @@ def main():
     objet = Obj("element1", videoObj)
     videoObj.objs.append(objet)
 
-    #(frameInit, initBB, frameBeginTrack, frameEndTrack) = objet.initElements()
+    (frameInit, initBB, frameBeginTrack, frameEndTrack) = objet.initElements()
 
-    (frameInit, initBB, frameBeginTrack, frameEndTrack) = (126, (224, 404, 150, 158), 14, 210)
+    #(frameInit, initBB, frameBeginTrack, frameEndTrack) = (126, (224, 404, 150, 158), 14, 210)
     result = objet.maskSequence(frameInit, initBB, frameBeginTrack, frameEndTrack)
     #result = videoObj.mask(frameInit, initBB, frameBeginTrack, frameEndTrack, videoObj.objs[0])
-    import pdb; pdb.set_trace()
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
 
 # Press the green button in the gutter to run the script.
