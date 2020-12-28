@@ -17,9 +17,9 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>530</x>
       <y>600</y>
-      <width>646</width>
+      <width>737</width>
       <height>76</height>
      </rect>
     </property>
@@ -419,13 +419,26 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="mask_all">
        <property name="text">
         <string>Traiter la vidéo</string>
        </property>
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="display_bbox">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>600</y>
+      <width>158</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cacher les bbox</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

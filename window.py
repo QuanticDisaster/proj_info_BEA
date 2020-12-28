@@ -37,17 +37,29 @@ class MyWindow(QtWidgets.QMainWindow):
         self.findChild(QPushButton, "initMask").clicked.connect(self.controleur.initializeMask)
 
         self.findChild(QPushButton, "mask_sequence").clicked.connect(self.maskSequence)
+        self.findChild(QPushButton, "mask_all").clicked.connect(self.controleur.maskAll)
+        self.findChild(QPushButton, "display_bbox").clicked.connect(self.displayBBOX)
+        
         
 
         ##TODO, delete
         #self.select_video_file_debug()
 
+    def displayBBOX(self):
+        text = self.findChild(QPushButton, "display_bbox").text()
+        if text == "Cacher les bbox":
+            self.findChild(QPushButton, "display_bbox").setText("Afficher les bbox")
+        elif text == "Afficher les bbox":
+            self.findChild(QPushButton, "display_bbox").setText("Cacher les bbox")
+
+        self.controleur.displayBBOX()
+        
     def maskSequence(self):
         obj = self.controleur.getObjByName( self.findChild(QComboBox, "liste_objets").currentText() )
         seq = self.controleur.getSeqByName( obj, self.findChild(QComboBox, "liste_sequences").currentText() )
         self.controleur.maskSequence(obj,seq)
-    
-
+            
+        
     def updateInitFrame(self, idFrame):
         self.findChild(QLineEdit, "frame_init").setText(str(idFrame))
         

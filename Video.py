@@ -13,6 +13,7 @@ class Video():
     keyPressed = None
     paused = None
     n_frame = None
+    displayBBOX = True
 
     def __init__(self, name, fullPath, controleur):
         self.name = name
@@ -71,7 +72,6 @@ class Video():
         while True:
 
             ################ tools to navigate in the video  ####################
-
             if self.keyPressed == "next":
                 #we go 1 frames forward
                 vs.set(cv2.CAP_PROP_POS_FRAMES, self.n_frame)
@@ -129,7 +129,15 @@ class Video():
                     self.n_frame += 1
                     # check to see if we have reached the end of the stream
                     #cv2.imshow("Frame", frame)
-                    self.controleur.showFrame(frame)
+                    display_frame = frame
+                    if self.displayBBOX:
+                        for obj in self.objs:
+                            box = obj.bbox[self.n_frame - 1]
+                            if box != -999:
+                                (x, y, w, h) = [int(v) for v in box]
+                                cv2.rectangle(display_frame, (x, y), (x + w, y + h),
+                                              (0, 255, 0), 2)
+                    self.controleur.showFrame(display_frame)
 
             
                     
@@ -140,7 +148,11 @@ class Video():
         # close all windows
         #cv2.destroyAllWindows()
 
-
+    def maskAll(self):
+        for obj in self.objs:
+            for seq in obj.sequences:
+                obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"] )
+                
 
     #def resumeRead(self,frameToStart):
         

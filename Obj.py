@@ -149,6 +149,7 @@ class Obj():
 
     def maskSequence(self, frameInit, initBB, frameBeginTrack, frameEndTrack):
 
+        frameInit, initBB, frameBeginTrack, frameEndTrack = int(frameInit), initBB, int(frameBeginTrack), int(frameEndTrack)
         
         tracker = "csrt"
         # extract the OpenCV version info
@@ -189,7 +190,7 @@ class Obj():
             for i in range(frameInit, frameEndTrack):
 
                 frame = vs.read()[1]
-                frame = imutils.resize(frame, width=1000)
+                #frame = imutils.resize(frame, width=1000)
                 (H, W) = frame.shape[:2]
 
 
@@ -238,7 +239,7 @@ class Obj():
             for i in range(frameInit, frameBeginTrack - 1, -1):
                 vs.set(cv2.CAP_PROP_POS_FRAMES, i)
                 frame = vs.read()[1]
-                frame = imutils.resize(frame, width=1000)
+                #frame = imutils.resize(frame, width=1000)
                 (H, W) = frame.shape[:2]
 
                 if i == frameInit:

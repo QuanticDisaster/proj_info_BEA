@@ -34,10 +34,16 @@ class Controleur():
         self.current_video = Video("video1",fullPath,self)
         self.current_video.paused = True
         self.current_video.read()
+
+    def displayBBOX(self):
+        self.current_video.displayBBOX = not self.current_video.displayBBOX
+
         
     def maskSequence(self, obj, seq):
         obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"] ) 
 
+    def maskAll(self):
+        self.current_video.maskAll()
         
     def next_frame(self):
         self.current_video.keyPressed = "next"
@@ -73,7 +79,6 @@ class Controleur():
 
         self.vue.updateInitFrame(idFrame)
         
-        import pdb; pdb.set_trace()
         
     def showFrame(self,frame):
         idFrame = self.current_video.n_frame
@@ -86,7 +91,6 @@ class Controleur():
         if current_obj != None:
             current_seq = self.getSeqByName(current_obj, seq_name)
             if current_seq != None:
-                #TODO
                 current_seq["idFrameBeginTrack"] = begin
                 current_seq["idFrameEndTrack"] = end
                 current_seq["idFrameInit"] = init
