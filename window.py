@@ -231,11 +231,6 @@ class MyWindow(QtWidgets.QMainWindow):
         
         if filename != "":
 
-            #####CONTROLEUR#####
-            
-            #changement de la video
-            self.controleur.loadVideo(filename)
-
 
             ########VUE#########
             
@@ -251,6 +246,11 @@ class MyWindow(QtWidgets.QMainWindow):
             self.findChild(QLineEdit, "frame_debut").setText("")
             self.findChild(QLineEdit, "frame_init").setText("")
             self.findChild(QLineEdit, "frame_fin").setText("")
+
+            #####CONTROLEUR#####
+            
+            #changement de la video
+            self.controleur.loadVideo(filename)
             
 
     def showFrame(self, frame, id_frame, nbFrames):
