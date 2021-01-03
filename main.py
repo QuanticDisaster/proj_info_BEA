@@ -27,6 +27,10 @@ class Controleur():
     current_video = None
     read = True
     key3 = None
+    app = None
+
+    def __init__(self,app):
+        self.app = app
 
     def loadVideo(self,fullPath):
         #change la vidéo en cours d'édition
@@ -264,12 +268,15 @@ if __name__ == '__main__':
         import sys
         
         
-        app = QtWidgets.QApplication(sys.argv)
-        controleur = Controleur()
+        #app = QtWidgets.QApplication(sys.argv)
+        app = QApplication.instance()
+        if app is None:
+            app = QApplication([])
+        controleur = Controleur(app)
         controleur.vue = MyWindow(controleur)
         
         controleur.vue.show()
-        controleur.vue.select_video_file_debug()
+        #controleur.vue.select_video_file_debug()
         #controleur.readVideo(r"D:\Mes documents\_PPMD\Projet informatique BEA\local\donnees\donnees_BEA\paramoteur.mp4")
         
         sys.exit(app.exec_())

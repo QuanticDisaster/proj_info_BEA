@@ -69,8 +69,8 @@ class Video():
         # loop over frames from the video stream
         self.n_frame = 0
         timeToWait = 25
+        
         while True:
-
             ################ tools to navigate in the video  ####################
             if self.keyPressed == "next":
                 #we go 1 frames forward
@@ -142,7 +142,10 @@ class Video():
             
                     
             self.keyPressed = None
+            
             key = cv2.waitKey(timeToWait) & 0xFF
+            self.controleur.app.processEvents()
+
         # otherwise, release the file pointer
         vs.release()
         # close all windows
