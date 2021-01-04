@@ -3,6 +3,9 @@ import time
 import imutils
 import numpy as np
 from imutils.video import FPS
+import os
+import shutil
+
 
 class Obj():
 
@@ -21,7 +24,8 @@ class Obj():
     def __init__(self, name, video):
         self.name = name
         self.video = video
-        self.bbox = [- 999] *  video.nbFrames
+        self.bbox = [(-1, -1, -1, -1)] *  video.nbFrames
+        self.mask = [None] *  video.nbFrames
         self.sequences = []
 
     def initElements(self):
@@ -236,6 +240,7 @@ class Obj():
             ####################  handle BACKWARD tracking ########################
 
             fps = FPS().start()
+            vs.set(cv2.CAP_PROP_POS_FRAMES, frameInit)
             for i in range(frameInit, frameBeginTrack - 1, -1):
                 vs.set(cv2.CAP_PROP_POS_FRAMES, i)
                 frame = vs.read()[1]
@@ -243,6 +248,8 @@ class Obj():
                 (H, W) = frame.shape[:2]
 
                 if i == frameInit:
+                    #TODO
+                    #le tracker ne peutpas être initialisé 2 fois semble-t-il, à corriger ! 
                     tracker.init(frame, initBB)
                     self.bbox[frameInit] = initBB
 
@@ -302,7 +309,7 @@ class Obj():
             # on fait une copie de la frame pour "écrire" dessus sans modifier la frame originale
             display_frame = frame
             box = self.bbox[n_frame - 1 ]
-            if box != -999:
+            if box[0] != -1:
                 (x, y, w, h) = [int(v) for v in box]
                 cv2.rectangle(frame, (x, y), (x + w, y + h),
                           (0, 255, 0), 2)
@@ -314,3 +321,32 @@ class Obj():
         # close all windows
         cv2.destroyAllWindows()
 
+    def bboxTrackingToMask(self):
+        for i in range(self.video.nbFrames):
+            binaryImage = np.zeros( self.video.frameDimensions, np.uint8)
+            (x, y, w, h) = [int(v) for v in self.bbox[i]]
+            if x != -1:
+                cv2.rectangle( binaryImage, (x,y), (x + w, y + h), 255, -1)
+                self.mask[i] = binaryImage
+
+    def exportMaskToFile(self, location = ""):
+        ###on utilise la librairie Path pour assurer le fonctionnement sous windows ET linux
+        folder = os.path.join(location, 'mask')
+        if not os.path.isdir(folder):
+            #création du dossier s'il n'existe pas
+            os.mkdir(folder)
+
+        #si le sous dossier contenant les masques de l'objet existe, on le vide, sinon on le crée
+        subfolder = os.path.join(folder,self.name)
+        if not os.path.isdir(subfolder):
+            os.mkdir(subfolder)
+        else:
+            shutil.rmtree(subfolder)
+            os.mkdir(subfolder)
+
+        for i,m in enumerate(self.mask):
+            if m is not None:
+                filename = os.path.join(subfolder, "frame_" + str(i) + ".tif")
+                cv2.imwrite(filename, m)
+        
+        

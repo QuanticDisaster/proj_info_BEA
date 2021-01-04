@@ -14,12 +14,15 @@ class Video():
     paused = None
     n_frame = None
     displayBBOX = True
+    frameDimensions = (0,0)
+    
 
     def __init__(self, name, fullPath, controleur):
         self.name = name
         self.fullPath = fullPath
         vs = cv2.VideoCapture(self.fullPath)
         self.nbFrames = int(vs.get(cv2.CAP_PROP_FRAME_COUNT))
+        self.frameDimensions = ( int( vs.get(cv2.CAP_PROP_FRAME_HEIGHT) ), int( vs.get(cv2.CAP_PROP_FRAME_WIDTH) ) )
         vs.release()
         self.controleur = controleur
         
@@ -157,6 +160,11 @@ class Video():
                 obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"] )
                 
 
+    #def bboxTrackingToMask(self, idFrameDebut, idFrameFin):
+    #    for i in range(idFrameDebut, idFrameFin):
+    #        binaryImage = np.array( self.frameDimension, np.uint8)
+    #        Mask
+        
     #def resumeRead(self,frameToStart):
         
     """

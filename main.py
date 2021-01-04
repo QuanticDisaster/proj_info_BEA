@@ -275,7 +275,22 @@ if __name__ == '__main__':
         controleur = Controleur(app)
         controleur.vue = MyWindow(controleur)
         
-        controleur.vue.show()
+        ####VERSION AVEC INTERFACE
+        #controleur.vue.show()
+
+        ####VERSION SANS INTERFACE
+        
+        fullPath = r"D:\Mes documents\_PPMD\Projet informatique BEA\local\donnees\videos_youtube\Top 5 POV Plane Emergency Landings.mp4"
+        controleur.current_video = Video("video1",fullPath,controleur)
+        controleur.current_video.paused = True
+        print("ok")
+        controleur.addObject("objet 1")
+        controleur.addSequence(controleur.getObjByName("objet 1"), "sequence 1" )
+        controleur.getObjByName("objet 1").maskSequence(126, (224, 404, 150, 158), 100, 210)
+        controleur.getObjByName("objet 1").bboxTrackingToMask()
+        controleur.getObjByName("objet 1").exportMaskToFile()
+        
+        
         #controleur.vue.select_video_file_debug()
         #controleur.readVideo(r"D:\Mes documents\_PPMD\Projet informatique BEA\local\donnees\donnees_BEA\paramoteur.mp4")
         
