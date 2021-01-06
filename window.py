@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap,QImage
+from windowUI import Ui_MainWindow
 
 
 class MyWindow(QtWidgets.QMainWindow):
@@ -10,7 +11,10 @@ class MyWindow(QtWidgets.QMainWindow):
     def __init__(self, controleur):
         super(MyWindow,self).__init__()
         self.controleur = controleur
-        uic.loadUi("window.ui",self)
+        
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        #uic.loadUi("window.ui",self)
         
         self.findChild(QPushButton, "load_video").clicked.connect(self.select_video_file)
         self.findChild(QPushButton, "new_object").clicked.connect(self.create_object)
