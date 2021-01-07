@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1311</width>
-    <height>754</height>
+    <height>822</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -406,8 +406,8 @@
      <rect>
       <x>40</x>
       <y>590</y>
-      <width>160</width>
-      <height>83</height>
+      <width>165</width>
+      <height>134</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -422,6 +422,22 @@
       <widget class="QPushButton" name="mask_all">
        <property name="text">
         <string>Traiter la vidéo</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="export_object_mask">
+       <property name="text">
+        <string>Exporter les 
+masques de l'objet</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="export_fused_masks">
+       <property name="text">
+        <string>Exporter les 
+ masques fusionnés</string>
        </property>
       </widget>
      </item>

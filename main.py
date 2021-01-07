@@ -32,6 +32,17 @@ class Controleur():
     def __init__(self,app):
         self.app = app
 
+    def exportObjectMask(self):
+        obj = self.getObjByName( self.vue.findChild(QComboBox, "liste_objets").currentText() )
+        print(obj.name)
+        obj.bboxTrackingToMask()
+        obj.exportMaskToFile()
+
+    def exportFusedMasks(self):
+        print("export fused masks")
+        self.current_video.fuseMask()
+        self.current_video.exportFusedMasksToFile()
+    
     def loadVideo(self,fullPath):
         #change la vidéo en cours d'édition
         #cette fonction est appelée par la vue après un click sur "Load Video"
@@ -276,10 +287,10 @@ if __name__ == '__main__':
         controleur.vue = MyWindow(controleur)
         
         ####VERSION AVEC INTERFACE
-        #controleur.vue.show()
+        controleur.vue.show()
 
         ####VERSION SANS INTERFACE
-        
+        """
         fullPath = r"D:\Mes documents\_PPMD\Projet informatique BEA\local\donnees\videos_youtube\Top 5 POV Plane Emergency Landings.mp4"
         controleur.current_video = Video("video1",fullPath,controleur)
         controleur.current_video.paused = True
@@ -298,14 +309,17 @@ if __name__ == '__main__':
         
 
         controleur.current_video.fuseMask()
-        #controleur.vue.select_video_file_debug()
+        """
+        #
         #controleur.readVideo(r"D:\Mes documents\_PPMD\Projet informatique BEA\local\donnees\donnees_BEA\paramoteur.mp4")
 
 
+        #controleur.vue.select_video_file_debug()
 
+        
+        sys.exit(app.exec_())
 
         import pdb; pdb.set_trace()
-        sys.exit(app.exec_())
 
         
         

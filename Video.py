@@ -185,6 +185,7 @@ class Video():
             ret, mask = cv2.threshold(mask, 1, 255, cv2.THRESH_BINARY)
 
             if not empty:
+                print("maj de l'attribut")
                 self.fusedMasks[i] = mask
 
 
@@ -196,34 +197,31 @@ class Video():
     """
     
     def exportFusedMasksToFile(self, location = ""):
-        import sys, traceback, pdb
-        try:
-            ###on utilise la librairie Path pour assurer le fonctionnement sous windows ET linux
-            folder = os.path.join(location, 'mask')
-            if not os.path.isdir(folder):
-                #création du dossier s'il n'existe pas
-                os.mkdir(folder)
 
-            #si le sous dossier contenant les masques de l'objet existe, on le vide, sinon on le crée
-            subfolder = os.path.join(folder,"fusion")
-            if not os.path.isdir(subfolder):
-                os.mkdir(subfolder)
-            else:
-                shutil.rmtree(subfolder)
-                os.mkdir(subfolder)
+        ###on utilise la librairie Path pour assurer le fonctionnement sous windows ET linux
+        folder = os.path.join(location, 'mask')
+        if not os.path.isdir(folder):
+            #création du dossier s'il n'existe pas
+            os.mkdir(folder)
 
-            for i,m in enumerate(self.fusedMasks):
-                if m is not None:
-                    filename = os.path.join(subfolder, "frame_" + str(i) + ".tif")
-                    try:
-                        cv2.imwrite(filename, m)
-                    except:
-                        print("couldn't save file {}".format(filename))
+        #si le sous dossier contenant les masques de l'objet existe, on le vide, sinon on le crée
+        subfolder = os.path.join(folder,"fusion")
+        if not os.path.isdir(subfolder):
+            os.mkdir(subfolder)
+        else:
+            shutil.rmtree(subfolder)
+            os.mkdir(subfolder)
 
-        except:
-            extype, value, tb = sys.exc_info()
-            traceback.print_exc()
-            pdb.post_mortem(tb)
+        for i,m in enumerate(self.fusedMasks):
+            if m is not None:
+                filename = os.path.join(subfolder, "frame_" + str(i) + ".tif")
+                try:
+                    cv2.imwrite(filename, m)
+                except:
+                    print("couldn't save file {}".format(filename))
+        
+        print("finished saving")
+
     """
     def addObjByName(self, nameObj):
         self.objs.append( Obj(nameObj, self))

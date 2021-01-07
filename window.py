@@ -43,12 +43,16 @@ class MyWindow(QtWidgets.QMainWindow):
         self.findChild(QPushButton, "mask_sequence").clicked.connect(self.maskSequence)
         self.findChild(QPushButton, "mask_all").clicked.connect(self.controleur.maskAll)
         self.findChild(QPushButton, "display_bbox").clicked.connect(self.displayBBOX)
+
+        self.findChild(QPushButton, "export_fused_masks").clicked.connect(self.controleur.exportFusedMasks)
+        self.findChild(QPushButton, "export_object_mask").clicked.connect(self.controleur.exportObjectMask)
         
         
 
         ##TODO, delete
         #self.select_video_file_debug()
 
+        
     def displayBBOX(self):
         text = self.findChild(QPushButton, "display_bbox").text()
         if text == "Cacher les bbox":

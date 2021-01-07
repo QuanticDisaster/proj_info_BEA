@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1311, 754)
+        MainWindow.resize(1311, 822)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
@@ -227,7 +227,7 @@ class Ui_MainWindow(object):
         self.idFrame.setTextFormat(QtCore.Qt.AutoText)
         self.idFrame.setObjectName("idFrame")
         self.verticalLayoutWidget_3 = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget_3.setGeometry(QtCore.QRect(40, 590, 160, 83))
+        self.verticalLayoutWidget_3.setGeometry(QtCore.QRect(40, 590, 165, 134))
         self.verticalLayoutWidget_3.setObjectName("verticalLayoutWidget_3")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_3)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -238,6 +238,12 @@ class Ui_MainWindow(object):
         self.mask_all = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
         self.mask_all.setObjectName("mask_all")
         self.verticalLayout_2.addWidget(self.mask_all)
+        self.export_object_mask = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.export_object_mask.setObjectName("export_object_mask")
+        self.verticalLayout_2.addWidget(self.export_object_mask)
+        self.export_fused_masks = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.export_fused_masks.setObjectName("export_fused_masks")
+        self.verticalLayout_2.addWidget(self.export_fused_masks)
         self.display_bbox = QtWidgets.QPushButton(self.centralwidget)
         self.display_bbox.setGeometry(QtCore.QRect(280, 600, 158, 23))
         self.display_bbox.setObjectName("display_bbox")
@@ -287,5 +293,9 @@ class Ui_MainWindow(object):
         self.idFrame.setText(_translate("MainWindow", "Frame : "))
         self.mask_sequence.setText(_translate("MainWindow", "Traiter la séquence"))
         self.mask_all.setText(_translate("MainWindow", "Traiter la vidéo"))
+        self.export_object_mask.setText(_translate("MainWindow", "Exporter les \n"
+"masques de l\'objet"))
+        self.export_fused_masks.setText(_translate("MainWindow", "Exporter les \n"
+" masques fusionnés"))
         self.display_bbox.setText(_translate("MainWindow", "Cacher les bbox"))
         self.loadvideo.setText(_translate("MainWindow", "Load video"))
