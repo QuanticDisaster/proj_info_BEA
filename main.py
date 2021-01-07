@@ -289,11 +289,22 @@ if __name__ == '__main__':
         controleur.getObjByName("objet 1").maskSequence(126, (224, 404, 150, 158), 100, 210)
         controleur.getObjByName("objet 1").bboxTrackingToMask()
         controleur.getObjByName("objet 1").exportMaskToFile()
+
+        controleur.addObject("objet 2")
+        controleur.addSequence(controleur.getObjByName("objet 2"), "sequence 1" )
+        controleur.getObjByName("objet 2").maskSequence(150, (275, 475, 220, 228), 130, 250)
+        controleur.getObjByName("objet 2").bboxTrackingToMask()
+        controleur.getObjByName("objet 2").exportMaskToFile()
         
-        
+
+        controleur.current_video.fuseMask()
         #controleur.vue.select_video_file_debug()
         #controleur.readVideo(r"D:\Mes documents\_PPMD\Projet informatique BEA\local\donnees\donnees_BEA\paramoteur.mp4")
-        
+
+
+
+
+        import pdb; pdb.set_trace()
         sys.exit(app.exec_())
 
         

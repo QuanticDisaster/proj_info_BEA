@@ -7,6 +7,7 @@ import os
 import shutil
 
 
+
 class Obj():
 
     name = None
@@ -226,7 +227,6 @@ class Obj():
                 ]
                 # loop over the info tuples and draw them on our frame
                 for (i, (k, v)) in enumerate(info):
-                    print(i, H - ((i * 20) + 20))
                     text = "{}: {}".format(k, v)
                     cv2.putText(frame, text, (10, H - ((i * 20) + 20)),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
@@ -273,7 +273,6 @@ class Obj():
                 ]
                 # loop over the info tuples and draw them on our frame
                 for (i, (k, v)) in enumerate(info):
-                    print(i, H - ((i * 20) + 20))
                     text = "{}: {}".format(k, v)
                     cv2.putText(frame, text, (10, H - ((i * 20) + 20)),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
@@ -347,6 +346,9 @@ class Obj():
         for i,m in enumerate(self.mask):
             if m is not None:
                 filename = os.path.join(subfolder, "frame_" + str(i) + ".tif")
-                cv2.imwrite(filename, m)
+                try:
+                    cv2.imwrite(filename, m)
+                except:
+                    print("couldn't save file {}".format(filename))
         
         
