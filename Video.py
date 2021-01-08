@@ -37,41 +37,9 @@ class Video():
                 return o
 
         
-    def visualizebbox(self):
-        vs = cv2.VideoCapture(self.fullPath)
-        # loop over frames from the video stream
-        self.n_frame = 0
-        while True:
-
-            # grab the current frame
-            success, f = vs.read()
-
-            if not success:
-                break
-            frame = f
-            self.n_frame += 1
-            # check to see if we have reached the end of the stream
-
-            frame = imutils.resize(frame, width=1000)
-            (H, W) = frame.shape[:2]
-
-            # on fait une copie de la frame pour "écrire" dessus sans modifier la frame originale
-            display_frame = frame
-            for obj in self.objs:
-                box = obj.bbox[self.n_frame - 1]
-                if box != -999:
-                    (x, y, w, h) = [int(v) for v in box]
-                    cv2.rectangle(frame, (x, y), (x + w, y + h),
-                                  (0, 255, 0), 2)
-
-            cv2.imshow("Frame", display_frame)
-            key = cv2.waitKey(1) & 0xFF
-        # otherwise, release the file pointer
-        vs.release()
-        # close all windows
-        cv2.destroyAllWindows()
-
+    
     def read(self):
+        """lance la lecture de la vidéo via une boucle while dont on ne sort jamais"""
         vs = cv2.VideoCapture(self.fullPath)
         # loop over frames from the video stream
         self.n_frame = 0
@@ -164,17 +132,10 @@ class Video():
                 obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"] )
                 
 
-    #def bboxTrackingToMask(self, idFrameDebut, idFrameFin):
-    #    for i in range(idFrameDebut, idFrameFin):
-    #        binaryImage = np.array( self.frameDimension, np.uint8)
-    #        Mask
-        
-    #def resumeRead(self,frameToStart):
 
 
     def fuseMask(self):
-        #import pdb; pdb.set_trace()
-
+        """fusionne les masques de tous les objets"""
         for i in range(self.nbFrames):
             mask = np.zeros( self.frameDimensions, np.uint8)
             empty = True
@@ -190,11 +151,7 @@ class Video():
 
 
 
-    """       
-    def exportMasksToFile(self, location = ""):
-        for o in self.objs:
-            o.exportMaskToFile(location)
-    """
+
     
     def exportFusedMasksToFile(self, location = ""):
 
@@ -222,10 +179,3 @@ class Video():
         
         print("finished saving")
 
-    """
-    def addObjByName(self, nameObj):
-        self.objs.append( Obj(nameObj, self))
-
-    def addObjByObj(self, obj):
-        self.objs.append( obj )
-    """

@@ -54,6 +54,9 @@ class MyWindow(QtWidgets.QMainWindow):
 
         
     def displayBBOX(self):
+        """
+            Active/désactive la visualisation des masques sur la vidéo de l'interface
+        """
         text = self.findChild(QPushButton, "display_bbox").text()
         if text == "Cacher les bbox":
             self.findChild(QPushButton, "display_bbox").setText("Afficher les bbox")

@@ -29,130 +29,9 @@ class Obj():
         self.mask = [None] *  video.nbFrames
         self.sequences = []
 
-    def initElements(self):
-        """
-        Cette fonction renvoie
-        """
-
-        idFrameInit, initBB, idFrameBeginTrack, idFrameEndTrack = -1, -1, -1, -1
-
-        vs = cv2.VideoCapture(self.video.fullPath)
-        # loop over frames from the video stream
-        n_frame = 0
-        timeToWait = 100
-        showFrameInformation = True
-        while True:
-
-            # grab the current frame
-            success, f = vs.read()
-
-            if success:
-                frame = f
-                n_frame += 1
-            else:
-                #en cas d'échec, on récupère la dernière frame
-                vs.set(cv2.CAP_PROP_POS_FRAMES,vs.get(cv2.CAP_PROP_FRAME_COUNT)-1)
-                frame = vs.read()[1]
-            # check to see if we have reached the end of the stream
-
-            frame = imutils.resize(frame, width=1000)
-            (H, W) = frame.shape[:2]
-
-
-
-            #on fait une copie de la frame pour "écrire" dessus sans modifier la frame originale
-            display_frame = frame
-            speed_text = ""
-            if timeToWait == 1:
-                speed_text = "MAX"
-            elif timeToWait == 0:
-                speed_text = ""
-            else:
-                speed_text = round(100 / timeToWait, 2)
-            info = [
-                ("frame", n_frame),
-                ("speed", speed_text),
-                ("paused", timeToWait == 0),
-            ]
-            if showFrameInformation:
-                # show the output frame
-
-                for (i, (k, v)) in enumerate(info):
-                    print(i, H - ((i * 20) + 20))
-                    text = "{}: {}".format(k, v)
-                    cv2.putText(frame, text, (10, H - ((i * 20) + 20)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-
-            cv2.imshow("Frame", display_frame)
-            key = cv2.waitKey(timeToWait) & 0xFF
-
-
-
-            ################ tools to navigate in the video  ####################
-
-            ###here we handle the keys skipping X frames forward or backward
-            if key == ord("e"):
-                #we go 100 frames forward
-                vs.set(cv2.CAP_PROP_POS_FRAMES, n_frame + 100)
-                n_frame = int(min( n_frame + 100, vs.get(cv2.CAP_PROP_FRAME_COUNT)))
-
-            if key == ord("a"):
-                #we go 100 frames backward
-                vs.set(cv2.CAP_PROP_POS_FRAMES, n_frame - 100)
-                n_frame = max(0, n_frame - 100)
-
-            # if the `q` key was pressed, break from the loop
-            if key == ord("q"):
-                break
-
-            ###we speed up or down the reading of the video
-            if key == ord("w"):
-                timeToWait += 10
-            #fasta, fasta, fasta !
-            if key == ord("x"):
-                if timeToWait == 0:
-                    timeToWait = 150
-                timeToWait = max(1, timeToWait - 10)
-
-            ###pause
-            if key == ord("p"):
-                if timeToWait == 0:
-                    timeToWait = 150
-                timeToWait = 0
-
-            ###hide information
-            if key == ord("h"):
-                showFrameInformation = not showFrameInformation
-
-
-            #################### selecting BBOX and frames ########################
-
-            # if the 's' key is selected, we are going to "select" a bounding
-            # box to track
-            if key == ord("s"):
-                # select the bounding box of the object we want to track (make
-                # sure you press ENTER or SPACE after selecting the ROI)
-                initBB = cv2.selectROI("Frame", frame, fromCenter=False,
-                                       showCrosshair=True)
-                idFrameInit = n_frame
-
-            ###if u is pressed, frame is considered beginning of the sequence to track object. Same for i with end of the sequence
-            if key == ord("u"):
-                idFrameBeginTrack = n_frame
-            if key == ord("i"):
-                idFrameEndTrack = n_frame
-
-
-            ##################### returning the sequence/BBOX choice ##################
-
-            if key == ord("t"):
-                cv2.destroyAllWindows()
-                return (idFrameInit, initBB, idFrameBeginTrack, idFrameEndTrack)
-
-        vs.release()
-        cv2.destroyAllWindows()
-
+    
     def maskSequence(self, frameInit, initBB, frameBeginTrack, frameEndTrack):
+        """Lance le tracking d'un objet et maj les bbox l'encadrant sur chaque frame. Ne crée pas réellement de masque"""
 
         frameInit, initBB, frameBeginTrack, frameEndTrack = int(frameInit), initBB, int(frameBeginTrack), int(frameEndTrack)
         
@@ -287,40 +166,9 @@ class Obj():
             # close all windows
             cv2.destroyAllWindows()
 
-    def visualizebbox(self):
-        vs = cv2.VideoCapture(self.video.fullPath)
-        # loop over frames from the video stream
-        n_frame = 0
-        while True:
-
-            # grab the current frame
-            success, f = vs.read()
-
-            if not success:
-                break
-            frame = f
-            n_frame += 1
-            # check to see if we have reached the end of the stream
-
-            frame = imutils.resize(frame, width=1000)
-            (H, W) = frame.shape[:2]
-
-            # on fait une copie de la frame pour "écrire" dessus sans modifier la frame originale
-            display_frame = frame
-            box = self.bbox[n_frame - 1 ]
-            if box[0] != -1:
-                (x, y, w, h) = [int(v) for v in box]
-                cv2.rectangle(frame, (x, y), (x + w, y + h),
-                          (0, 255, 0), 2)
-
-            cv2.imshow("Frame", display_frame)
-            key = cv2.waitKey(1) & 0xFF
-        # otherwise, release the file pointer
-        vs.release()
-        # close all windows
-        cv2.destroyAllWindows()
 
     def bboxTrackingToMask(self):
+        """Convertie les bbox en masques rectangulaires"""
         for i in range(self.video.nbFrames):
             binaryImage = np.zeros( self.video.frameDimensions, np.uint8)
             (x, y, w, h) = [int(v) for v in self.bbox[i]]

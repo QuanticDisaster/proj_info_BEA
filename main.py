@@ -22,6 +22,9 @@ from PyQt5.QtWidgets import *
 
 
 class Controleur():
+    """
+        Classe controleur, elle reçoit les messages de la vue, lance les calculs du modèle (vidéo) et renvoie les résultats à la vue
+    """
 
     vue = None
     current_video = None
@@ -33,6 +36,7 @@ class Controleur():
         self.app = app
 
     def exportObjectMask(self):
+        """Exporte les masques de chaque objets créés par l'utilisateur dans un dossier"""
         obj = self.getObjByName( self.vue.findChild(QComboBox, "liste_objets").currentText() )
         print(obj.name)
         obj.bboxTrackingToMask()
@@ -88,6 +92,7 @@ class Controleur():
         self.current_video.keyPressed = "select_ROI"
 
     def updateBBOX(self, idFrame, bbox):
+        """fonction appelée par le modèle une fois le masque initialisé pour maj le paramètre initBB de la séquence et maj l'affichage"""
         obj = self.getObjByName( self.vue.findChild(QComboBox, "liste_objets").currentText())
         seq = self.getSeqByName( obj, self.vue.findChild(QComboBox, "liste_sequences").currentText())
         seq["initBB"] = bbox
@@ -161,117 +166,13 @@ class Controleur():
                 if s["name"] != name:
                     list_without_seq.append(s)
             obj.sequences = list_without_seq
-            
-        
-    """def readVideo(self, fullPath):
-        self.fullPath = fullPath
-        self.objs= []
-        vs = cv2.VideoCapture(self.fullPath)
-        # loop over frames from the video stream
-        n_frame = 0
-
-    
-
-        
-        print("hop")
-        
-        key2 = None
-
-        def forward():
-            #self.read = False
-            print("backwaaaaard")
-            self.key3 = ord("a")
-            #self.read = True
-        self.vue.findChild(QPushButton, "pause").clicked.connect(forward)
-        #key2 = ord('a')
-        while self.read:
-
-            print(self.key3)
-        
-            # grab the current frame
-            success, f = vs.read()
-
-            if not success:
-                break
-            frame = f
-            n_frame += 1
-            # check to see if we have reached the end of the stream
-
-            frame = imutils.resize(frame, width=1000)
-            (H, W) = frame.shape[:2]
-
-            # on fait une copie de la frame pour "écrire" dessus sans modifier la frame originale
-            display_frame = frame
-            for obj in self.objs:
-                box = obj.bbox[n_frame - 1]
-                if box != -999:
-                    (x, y, w, h) = [int(v) for v in box]
-                    cv2.rectangle(frame, (x, y), (x + w, y + h),
-                                  (0, 255, 0), 2)
-
-            
-            
-            cv2.imshow("Frame", display_frame)
-            key = cv2.waitKey(1) & 0xFF
-
-            if self.key3 == ord("a"):
-                #we go 100 frames backward
-                vs.set(cv2.CAP_PROP_POS_FRAMES, n_frame - 100)
-                n_frame = max(0, n_frame - 100)
-                self.key3 = None
-
-            
-        # otherwise, release the file pointer
-        vs.release()
-        # close all windows
-        cv2.destroyAllWindows()
-        """
-        
-        
-
-
-def main():
-
-    video_filename = r"D:\Mes documents\_PPMD\Projet informatique BEA\local\donnees\donnees_BEA\parachute.mp4"
-
-    import os.path
-    if not os.path.isfile(video_filename):
-        print("File not found")
-        raise
-
-
-    videoObj = Video("video1", video_filename)
-
-    objet = Obj("element1", videoObj)
-    videoObj.objs.append(objet)
-
-    objet2 = Obj("element2", videoObj)
-    videoObj.objs.append(objet2)
-
-    (frameInit, initBB, frameBeginTrack, frameEndTrack) = (0, (616.247802734375, 544.9813232421875, 23.529401779174805, 29.411752700805664), 0, 210)#objet2.initElements()
-    result2 = objet2.maskSequence(frameInit, initBB, frameBeginTrack, frameEndTrack)
-    (frameInit, initBB, frameBeginTrack, frameEndTrack) = (126, (224, 404, 150, 158), 14, 210)
-    result = objet.maskSequence(frameInit, initBB, frameBeginTrack, frameEndTrack)
-
-    #result = videoObj.mask(frameInit, initBB, frameBeginTrack, frameEndTrack, videoObj.objs[0])
-    objet.visualizebbox()
-    import pdb; pdb.set_trace()
-
-
-def loadVideo(fullPath):
-    current_video = Video("video1",fullPath)
-
-def loadVideoView(fullPath):
-    MyWindow.label_4.t
-
-
-def except_hook(cls, exception, traceback):
-    sys.__excepthook__(cls, exception, traceback)
-
 
     
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+
+    def except_hook(cls, exception, traceback):
+        sys.__excepthook__(cls, exception, traceback)
 
     import pdb, traceback, sys
     sys.excepthook = except_hook
