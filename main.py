@@ -52,6 +52,10 @@ class Controleur():
         #cette fonction est appelée par la vue après un click sur "Load Video"
         self.current_video = Video("video1",fullPath,self)
         self.current_video.paused = True
+
+        #on force la création d'au moins un objet 
+        self.vue.create_object("default")
+        
         self.current_video.read()
 
     def displayBBOX(self):

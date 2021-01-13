@@ -88,9 +88,11 @@ class MyWindow(QtWidgets.QMainWindow):
         seq   = self.findChild(QComboBox, "liste_sequences").currentText()
         self.controleur.updateParameters(obj,seq,debut,fin,init)
         
-    def create_object(self):
+    def create_object(self, text = False):
         ok = True
-        text, ok = QInputDialog.getText(self, "nouvel objet", "nom du nouvel objet", text = "objet " + str(len(self.controleur.current_video.objs) + 1))
+
+        if text == False:
+            text, ok = QInputDialog.getText(self, "nouvel objet", "nom du nouvel objet", text = "objet " + str(len(self.controleur.current_video.objs) + 1))
 
         while self.controleur.getObjByName(text) != None:
             text, ok = QInputDialog.getText(self, "nouvel objet", "l'objet existe déjà", text = "objet " + str(len(self.controleur.current_video.objs) + 1))
@@ -107,6 +109,7 @@ class MyWindow(QtWidgets.QMainWindow):
             ########VUE#########
             
             ##NB : self.findchild(etc...) et self.nomdelobjet sont identiques
+            print(text)
             self.findChild(QComboBox,"liste_objets").addItem(text)
 
             #on vide les séquences
@@ -118,6 +121,9 @@ class MyWindow(QtWidgets.QMainWindow):
             self.findChild(QLineEdit, "frame_fin").setText("")
 
             self.findChild(QComboBox,"liste_objets").setCurrentIndex( self.findChild(QComboBox,"liste_objets").count() - 1)
+
+            #on force la création d'au moins une séquence dans l'objet
+            self.create_seq('default')
 
     def rename_obj(self):
         ok = True
@@ -153,10 +159,16 @@ class MyWindow(QtWidgets.QMainWindow):
         ########VUE#########
         self.findChild(QComboBox,"liste_objets").removeItem(self.findChild(QComboBox,"liste_objets").currentIndex())
 
-    def create_seq(self):
+        #si on supprime tous les objets, on force la création d'au moins un objet ainsi qu'une séquence
+        if self.findChild(QComboBox,"liste_objets").count() == 0:
+            self.create_object("default")
+
+    def create_seq(self, text = False):
         ok = True
         current_obj = self.controleur.getObjByName(self.findChild(QComboBox,"liste_objets").currentText())
-        text, ok = QInputDialog.getText(self, "nouvelle séquence", "nom de la nouvelle séquence", text = "sequence " + str(len(current_obj.sequences) + 1))
+        
+        if text == False:
+            text, ok = QInputDialog.getText(self, "nouvelle séquence", "nom de la nouvelle séquence", text = "sequence " + str(len(current_obj.sequences) + 1))
 
         while self.controleur.getSeqByName(current_obj, text) != None:
             text, ok = QInputDialog.getText(self, "nouvelle séquence", "la séquence existe déjà", text = "sequence " + str(len(current_obj.sequences) + 1))
@@ -217,21 +229,28 @@ class MyWindow(QtWidgets.QMainWindow):
         ########VUE#########
         self.findChild(QComboBox,"liste_sequences").removeItem(self.findChild(QComboBox,"liste_sequences").currentIndex())
 
+        #si on supprime toutes les séquences, on force a création d'une séquence par défault
+        if self.findChild(QComboBox,"liste_sequences").count() == 0 :
+            self.create_seq("default")
+
     def changeObject(self):
 
         self.findChild(QComboBox,"liste_sequences").clear()     
         current_obj = self.controleur.getObjByName(self.findChild(QComboBox,"liste_objets").currentText())
-        
-        if len(current_obj.sequences) != 0:
-            for s in current_obj.sequences:
-                self.findChild(QComboBox,"liste_sequences").addItem(s["name"])
+
+        if current_obj is not None:
+            if len(current_obj.sequences) != 0:
+                for s in current_obj.sequences:
+                    self.findChild(QComboBox,"liste_sequences").addItem(s["name"])
 
     def changeSequence(self):
         current_obj = self.controleur.getObjByName(self.findChild(QComboBox,"liste_objets").currentText())
-        current_seq = self.controleur.getSeqByName(current_obj, self.findChild(QComboBox,"liste_sequences").currentText())
-        self.findChild(QLineEdit,"frame_init").setText(str(current_seq["idFrameInit"]))
-        self.findChild(QLineEdit,"frame_debut").setText(str(current_seq["idFrameBeginTrack"]))
-        self.findChild(QLineEdit,"frame_fin").setText(str(current_seq["idFrameEndTrack"]))
+        if current_obj is not None:
+            current_seq = self.controleur.getSeqByName(current_obj, self.findChild(QComboBox,"liste_sequences").currentText())
+            if current_seq is not None:
+                self.findChild(QLineEdit,"frame_init").setText(str(current_seq["idFrameInit"]))
+                self.findChild(QLineEdit,"frame_debut").setText(str(current_seq["idFrameBeginTrack"]))
+                self.findChild(QLineEdit,"frame_fin").setText(str(current_seq["idFrameEndTrack"]))
 
         
     def select_video_file(self):
@@ -239,7 +258,6 @@ class MyWindow(QtWidgets.QMainWindow):
         #choix du fichier
         filename, _filter = QFileDialog.getOpenFileName(
             self, "Select video file ","")
-        
         if filename != "":
 
 
@@ -262,6 +280,8 @@ class MyWindow(QtWidgets.QMainWindow):
             
             #changement de la video
             self.controleur.loadVideo(filename)
+
+        
             
 
     def showFrame(self, frame, id_frame, nbFrames):
