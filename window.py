@@ -211,7 +211,7 @@ class MyWindow(QtWidgets.QMainWindow):
         #####CONTROLEUR#####
         for s in current_obj.sequences:
             if s["name"] == current_seq_name:
-                self.controleur.deleteSequence(current_obj,s)
+                self.controleur.deleteSequence(current_obj,s['name'])
                 break
             
         ########VUE#########
