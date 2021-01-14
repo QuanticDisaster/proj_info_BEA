@@ -45,6 +45,13 @@ class Video():
         self.n_frame = 0
         timeToWait = 25
         
+        #on affiche la première frame lorsqu'une vidéo est chargée
+        success, frame = vs.read()
+        self.controleur.showFrame(frame)
+        vs.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        cv2.waitKey(timeToWait) & 0xFF
+        self.controleur.app.processEvents()
+        
         while True:
             ################ tools to navigate in the video  ####################
             if self.keyPressed == "next":
