@@ -26,9 +26,9 @@ class MyWindow(QtWidgets.QMainWindow):
         
         self.findChild(QComboBox, "liste_objets").currentIndexChanged.connect(self.changeObject)
         self.findChild(QComboBox, "liste_sequences").currentIndexChanged.connect(self.changeSequence)
-        self.findChild(QLineEdit, "frame_debut").textChanged.connect(self.parameters_changed)
-        self.findChild(QLineEdit, "frame_fin").textChanged.connect(self.parameters_changed)
-        self.findChild(QLineEdit, "frame_init").textChanged.connect(self.parameters_changed)
+        self.findChild(QLineEdit, "frame_debut").textEdited.connect(self.parameters_changed)
+        self.findChild(QLineEdit, "frame_fin").textEdited.connect(self.parameters_changed)
+        self.findChild(QLineEdit, "frame_init").textEdited.connect(self.parameters_changed)
 
         self.findChild(QPushButton, "read").clicked.connect(self.readVideo)
         self.findChild(QPushButton, "pause").clicked.connect(self.pauseVideo)
