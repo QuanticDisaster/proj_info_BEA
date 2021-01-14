@@ -42,7 +42,8 @@ class Obj():
         # if we are using OpenCV 3.2 OR BEFORE, we can use a special factory
         # function to create our object tracker
         if int(major) == 3 and int(minor) < 3:
-            tracker = cv2.Tracker_create(tracker.upper())
+            tracker_forward = cv2.Tracker_create(tracker.upper())
+            tracker_backward = cv2.Tracker_create(tracker.upper())
 
         # otherwise, for OpenCV 3.3 OR NEWER, we need to explicity call the
         # approrpiate object tracker constructor:
@@ -61,7 +62,8 @@ class Obj():
             }
             # grab the appropriate object tracker using our dictionary of
             # OpenCV object tracker objects
-            tracker = OPENCV_OBJECT_TRACKERS[tracker]()
+            tracker_forward = OPENCV_OBJECT_TRACKERS[tracker]()
+            tracker_backward = OPENCV_OBJECT_TRACKERS[tracker]()
 
             vs = cv2.VideoCapture(self.video.fullPath)
             # initialize the FPS throughput estimator
@@ -80,10 +82,10 @@ class Obj():
 
 
                 if i == frameInit:
-                    tracker.init(frame, initBB)
+                    tracker_forward.init(frame, initBB)
                     self.bbox[frameInit] = initBB
 
-                (success, box) = tracker.update(frame)
+                (success, box) = tracker_forward.update(frame)
                 # check to see if the tracking was a success
                 if success:
                     self.bbox[i] = box
@@ -127,12 +129,10 @@ class Obj():
                 (H, W) = frame.shape[:2]
 
                 if i == frameInit:
-                    #TODO
-                    #le tracker ne peutpas être initialisé 2 fois semble-t-il, à corriger ! 
-                    tracker.init(frame, initBB)
+                    tracker_backward.init(frame, initBB)
                     self.bbox[frameInit] = initBB
 
-                (success, box) = tracker.update(frame)
+                (success, box) = tracker_backward.update(frame)
                 # check to see if the tracking was a success
                 if success:
                     self.bbox[i] = box
