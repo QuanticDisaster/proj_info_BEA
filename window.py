@@ -215,7 +215,11 @@ class MyWindow(QtWidgets.QMainWindow):
             self.findChild(QComboBox,"liste_sequences").removeItem(index)
             self.findChild(QComboBox,"liste_sequences").addItem(new_name)
             self.findChild(QComboBox,"liste_sequences").setCurrentIndex( self.findChild(QComboBox,"liste_sequences").count() -1 )
-            
+
+            seq = self.controleur.getSeqByName(new_name)
+            self.findChild(QLineEdit, "frame_debut").setText(seq["idFrameBeginTrack"])
+            self.findChild(QLineEdit, "frame_init").setText(seq["idFrameEndTrack"])
+            self.findChild(QLineEdit, "frame_fin").setText(seq["idFrameInit"])
         
     def delete_seq(self):
         current_obj_name = self.findChild(QComboBox,"liste_objets").currentText()
