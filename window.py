@@ -47,11 +47,29 @@ class MyWindow(QtWidgets.QMainWindow):
 
         self.findChild(QPushButton, "export_fused_masks").clicked.connect(self.controleur.exportFusedMasks)
         self.findChild(QPushButton, "export_object_mask").clicked.connect(self.controleur.exportObjectMask)
+        self.findChild(QPushButton, "debug").clicked.connect(self.debug)
+
+
+        #liste_trackers
+        trackers = ["csrt",     # O : more accurate than KCF but slower
+                    "kcf",      # O : doest not handle occlusions very well
+                    "boosting", # X : very old, not recommended
+                    "mil",      # O : better than boosting, badly handles failures
+                    "tld",      # : lot of false positives ?
+                    "medianflow",# O : handles failures well, but fails often when handling fast-moving objects or on quick appereance change
+                    "mosse"     # X : speed-oriented
+            ]
+
+        for t in trackers:
+            self.findChild(QComboBox, "tracker").addItem(t)
         
         
 
         ##TODO, delete
         #self.select_video_file_debug()
+
+    def debug(self):
+        import pdb; pdb.set_trace()
 
         
     def displayBBOX(self):
@@ -67,9 +85,10 @@ class MyWindow(QtWidgets.QMainWindow):
         self.controleur.displayBBOX()
         
     def maskSequence(self):
+        tracker = self.findChild(QComboBox, "tracker").currentText()
         obj = self.controleur.getObjByName( self.findChild(QComboBox, "liste_objets").currentText() )
         seq = self.controleur.getSeqByName( obj, self.findChild(QComboBox, "liste_sequences").currentText() )
-        self.controleur.maskSequence(obj,seq)
+        self.controleur.maskSequence(obj,seq, tracker)
             
         
     def updateInitFrame(self, idFrame):
@@ -215,11 +234,12 @@ class MyWindow(QtWidgets.QMainWindow):
             self.findChild(QComboBox,"liste_sequences").removeItem(index)
             self.findChild(QComboBox,"liste_sequences").addItem(new_name)
             self.findChild(QComboBox,"liste_sequences").setCurrentIndex( self.findChild(QComboBox,"liste_sequences").count() -1 )
-
+            
             seq = self.controleur.getSeqByName(new_name)
             self.findChild(QLineEdit, "frame_debut").setText(seq["idFrameBeginTrack"])
             self.findChild(QLineEdit, "frame_init").setText(seq["idFrameEndTrack"])
             self.findChild(QLineEdit, "frame_fin").setText(seq["idFrameInit"])
+            
         
     def delete_seq(self):
         current_obj_name = self.findChild(QComboBox,"liste_objets").currentText()

@@ -62,11 +62,11 @@ class Controleur():
         self.current_video.displayBBOX = not self.current_video.displayBBOX
 
         
-    def maskSequence(self, obj, seq):
-        obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"] ) 
+    def maskSequence(self, obj, seq, tracker):
+        obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"], tracker ) 
 
-    def maskAll(self):
-        self.current_video.maskAll()
+    def maskAll(self, tracker):
+        self.current_video.maskAll(tracker)
         
     def next_frame(self):
         self.current_video.keyPressed = "next"
@@ -202,13 +202,13 @@ if __name__ == '__main__':
         print("ok")
         controleur.addObject("objet 1")
         controleur.addSequence(controleur.getObjByName("objet 1"), "sequence 1" )
-        controleur.getObjByName("objet 1").maskSequence(126, (224, 404, 150, 158), 100, 210)
+        controleur.getObjByName("objet 1").maskSequence(126, (224, 404, 150, 158), 100, 210, "crst")
         controleur.getObjByName("objet 1").bboxTrackingToMask()
         controleur.getObjByName("objet 1").exportMaskToFile()
 
         controleur.addObject("objet 2")
         controleur.addSequence(controleur.getObjByName("objet 2"), "sequence 1" )
-        controleur.getObjByName("objet 2").maskSequence(150, (275, 475, 220, 228), 130, 250)
+        controleur.getObjByName("objet 2").maskSequence(150, (275, 475, 220, 228), 130, 250, "crst")
         controleur.getObjByName("objet 2").bboxTrackingToMask()
         controleur.getObjByName("objet 2").exportMaskToFile()
         

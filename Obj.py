@@ -30,12 +30,13 @@ class Obj():
         self.sequences = []
 
     
-    def maskSequence(self, frameInit, initBB, frameBeginTrack, frameEndTrack):
+    def maskSequence(self, frameInit, initBB, frameBeginTrack, frameEndTrack, tracker):
+        print("tracker : ", tracker)
         """Lance le tracking d'un objet et maj les bbox l'encadrant sur chaque frame. Ne crée pas réellement de masque"""
 
         frameInit, initBB, frameBeginTrack, frameEndTrack = int(frameInit), initBB, int(frameBeginTrack), int(frameEndTrack)
         
-        tracker = "csrt"
+        #tracker = "csrt"
         # extract the OpenCV version info
         (major, minor) = cv2.__version__.split(".")[:2]
 

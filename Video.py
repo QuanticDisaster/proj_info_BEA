@@ -116,6 +116,7 @@ class Video():
                         for obj in self.objs:
                             box = obj.bbox[self.n_frame - 1]
                             if box != -999:
+                                print(box)
                                 (x, y, w, h) = [int(v) for v in box]
                                 cv2.rectangle(display_frame, (x, y), (x + w, y + h),
                                               (0, 255, 0), 2)
@@ -133,10 +134,10 @@ class Video():
         # close all windows
         #cv2.destroyAllWindows()
 
-    def maskAll(self):
+    def maskAll(self, tracker ):
         for obj in self.objs:
             for seq in obj.sequences:
-                obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"] )
+                obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"], tracker )
                 
 
 
