@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QPixmap,QImage
 from windowUI import Ui_MainWindow
 
@@ -285,10 +286,10 @@ class MyWindow(QtWidgets.QMainWindow):
             
 
     def showFrame(self, frame, id_frame, nbFrames):
-        #import imutils
-        #frame = imutils.resize(frame, width=300)
+        h, w = self.findChild(QLabel, "label").size().height(), self.findChild(QLabel, "label").size().width()
+
         qtImg = QImage(frame.data, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
-        self.findChild(QLabel, "label").setPixmap(QPixmap.fromImage(qtImg))
+        self.findChild(QLabel, "label").setPixmap(QPixmap.fromImage(qtImg).scaled(QSize(w,h)))
         self.findChild(QLabel, "idFrame").setText("Frame : " + str(id_frame) + " / " + str(nbFrames))
         
     ##TODO, debug
