@@ -94,8 +94,7 @@ class Obj():
                     (x, y, w, h) = [int(v) for v in box]
                     cv2.rectangle(frame, (x, y), (x + w, y + h),
                                   (0, 255, 0), 2)
-                else:
-                    self.bbox[i] = -1
+                    
                 # update the FPS counter
                 fps.update()
                 fps.stop()
