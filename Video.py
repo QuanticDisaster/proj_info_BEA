@@ -144,19 +144,20 @@ class Video():
 
     def fuseMask(self):
         """fusionne les masques de tous les objets"""
+        for obj in self.objs:
+            obj.bboxTrackingToMask()
+            
         for i in range(self.nbFrames):
-            mask = np.zeros( self.frameDimensions, np.uint8)
             empty = True
             for obj in self.objs:
                 if obj.mask[i] is not None:
+                    mask = np.zeros( self.frameDimensions, np.uint8)
                     empty = False
                     mask += obj.mask[i]
-            ret, mask = cv2.threshold(mask, 1, 255, cv2.THRESH_BINARY)
+                    ret, mask = cv2.threshold(mask, 1, 255, cv2.THRESH_BINARY)
 
             if not empty:
-                print("maj de l'attribut")
                 self.fusedMasks[i] = mask
-
 
 
 
@@ -184,6 +185,5 @@ class Video():
                     cv2.imwrite(filename, m)
                 except:
                     print("couldn't save file {}".format(filename))
-        
         print("finished saving")
 
