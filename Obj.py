@@ -29,7 +29,29 @@ class Obj():
         self.mask = [None] *  video.nbFrames
         self.sequences = []
 
-    
+
+    def manualBBOX(self, current_frame):
+
+        i = current_frame
+
+        vs = cv2.VideoCapture(self.video.fullPath)
+        vs.set(cv2.CAP_PROP_POS_FRAMES, current_frame)
+        frame = vs.read()[1]
+                
+        ##changement bbox
+        box = cv2.selectROI("Frame", frame, fromCenter=False,
+                                       showCrosshair=True)
+        cv2.destroyAllWindows()
+        self.bbox[i] = box
+
+        ##changement massque
+        binaryImage = np.zeros( self.video.frameDimensions, np.uint8)
+        (x, y, w, h) = [int(v) for v in self.bbox[i]]
+        cv2.rectangle( binaryImage, (x,y), (x + w, y + h), 255, -1)
+        self.mask[i] = binaryImage
+        
+
+        
     def maskSequence(self, frameInit, initBB, frameBeginTrack, frameEndTrack, tracker):
         print("tracker : ", tracker)
         """Lance le tracking d'un objet et maj les bbox l'encadrant sur chaque frame. Ne crée pas réellement de masque"""

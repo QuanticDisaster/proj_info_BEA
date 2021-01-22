@@ -43,6 +43,7 @@ class Video():
         vs = cv2.VideoCapture(self.fullPath)
         # loop over frames from the video stream
         self.n_frame = 0
+        #vs.get(cv2.CAP_PROP_FPS)
         timeToWait = 25
         
         #on affiche la première frame lorsqu'une vidéo est chargée
@@ -116,7 +117,6 @@ class Video():
                         for obj in self.objs:
                             box = obj.bbox[self.n_frame - 1]
                             if box != -999:
-                                print(box)
                                 (x, y, w, h) = [int(v) for v in box]
                                 cv2.rectangle(display_frame, (x, y), (x + w, y + h),
                                               (0, 255, 0), 2)

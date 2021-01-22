@@ -50,6 +50,10 @@ class MyWindow(QtWidgets.QMainWindow):
         self.findChild(QPushButton, "debug").clicked.connect(self.debug)
 
 
+        self.findChild(QPushButton, "delete_mask").clicked.connect(self.deleteMask)
+        self.findChild(QPushButton, "edit_mask").clicked.connect(self.editMask)
+
+
         #liste_trackers
         trackers = ["csrt",     # O : more accurate than KCF but slower
                     "kcf",      # O : doest not handle occlusions very well
@@ -67,6 +71,33 @@ class MyWindow(QtWidgets.QMainWindow):
 
         ##TODO, delete
         #self.select_video_file_debug()
+
+    def editMask(self):
+        liste = self.findChild(QListWidget, "list_mask")
+        masque = liste.item(liste.currentRow()).text()
+
+        obj_name= masque
+        obj = self.controleur.getObjByName(obj_name)
+
+        self.controleur.editCurrentMask(obj)
+
+
+        
+    def deleteMask(self):
+        
+        ##VUE
+        liste = self.findChild(QListWidget, "list_mask")
+        masque = ( liste.takeItem(liste.currentRow()) ).text()
+
+        ##CONTROLEUR
+        
+        #Ayant posé une nomenclature arbitraire au nom des masques affichés (par exemple "objet"), on récupère l'objet
+        obj_name = masque
+        obj = self.controleur.getObjByName(obj_name)
+        
+        self.controleur.deleteCurrentMask(obj)
+        
+        
 
     def debug(self):
         import pdb; pdb.set_trace()
@@ -118,6 +149,9 @@ class MyWindow(QtWidgets.QMainWindow):
             text, ok = QInputDialog.getText(self, "nouvel objet", "l'objet existe déjà", text = "objet " + str(len(self.controleur.current_video.objs) + 1))
 
         if (ok and text != ""):
+
+            #on retire les espaces à la fin et au début
+            text = text.strip()
             
             #####CONTROLEUR#####
             
@@ -194,6 +228,9 @@ class MyWindow(QtWidgets.QMainWindow):
             text, ok = QInputDialog.getText(self, "nouvelle séquence", "la séquence existe déjà", text = "sequence " + str(len(current_obj.sequences) + 1))
             
         if (ok and text != ""):
+
+            #on retire les espaces à la fin et au début
+            text = text.strip()
             
             #####CONTROLEUR#####
             
@@ -310,12 +347,24 @@ class MyWindow(QtWidgets.QMainWindow):
             
 
     def showFrame(self, frame, id_frame, nbFrames):
+
+        #affichage image
         h, w = self.findChild(QLabel, "label").size().height(), self.findChild(QLabel, "label").size().width()
 
         qtImg = QImage(frame.data, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
         self.findChild(QLabel, "label").setPixmap(QPixmap.fromImage(qtImg).scaled(QSize(w,h)))
+
+        #MAJ du compteur de frame
         self.findChild(QLabel, "idFrame").setText("Frame : " + str(id_frame) + " / " + str(nbFrames))
-        
+
+        #MAJ de masques de la liste
+        #on vide la liste
+        self.findChild(QListWidget, "list_mask").clear()
+        for obj in self.controleur.current_video.objs:
+            if obj.bbox[id_frame -1] != (-1, -1, -1, -1):
+                self.findChild(QListWidget, "list_mask").addItem(obj.name)
+
+            
     ##TODO, debug
     def select_video_file_debug(self):
         print("good !")

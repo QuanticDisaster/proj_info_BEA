@@ -35,6 +35,15 @@ class Controleur():
     def __init__(self,app):
         self.app = app
 
+    def deleteCurrentMask(self, obj):
+        currentFrame = self.current_video.n_frame - 1 
+        obj.bbox[currentFrame] = (-1, -1, -1, -1)
+        obj.mask[currentFrame] = None
+
+    def editCurrentMask(self,obj):
+        currentFrame = self.current_video.n_frame - 1 
+        obj.manualBBOX(currentFrame)
+
     def exportObjectMask(self):
         """Exporte les masques de chaque objets créés par l'utilisateur dans un dossier"""
         obj = self.getObjByName( self.vue.findChild(QComboBox, "liste_objets").currentText() )
