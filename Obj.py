@@ -9,6 +9,35 @@ import shutil
 
 
 class Obj():
+    """
+        Objet
+
+        ...
+
+        Attributes
+        ----------
+            name : string
+                nom de l'objet
+            video : Video
+                vidéo à laquelle est rattaché l'objet
+            mask : list[ array ]
+                liste dont le ième élèment est le masque de l'objet sur la ième frame de la vidéo
+            bbox : list[ tuple(int,int,int,int) ]
+                liste dont le ième élèment est la bounding box de l'objet sur la ième frame de la vidéo
+        
+
+        Methods
+        -------
+            manualBBOX
+                permet de créer manuellement une bbox
+            maskSequence
+                traque un objet sur la séquence
+            bboxTrackingToMask
+                convertit les bbox en masques rectangulaires
+            exportMaskToFile
+                enregistre les masques sur le disque
+
+    """
 
     name = None
     video = None
@@ -23,6 +52,17 @@ class Obj():
     ##               "idFrameEndTrack" : 200}
 
     def __init__(self, name, video):
+        """
+        initialise la classe
+
+            Parameters:
+            ----------
+                name (string) :
+                    nom de l'objet
+                video (video) :
+                    objet video auquel est rattaché l'objet
+        
+        """
         self.name = name
         self.video = video
         self.bbox = [(-1, -1, -1, -1)] *  video.nbFrames
@@ -31,6 +71,14 @@ class Obj():
 
 
     def manualBBOX(self, current_frame):
+        """
+        permet à l'utilisateur de choisir manuellement une bbox et donc le masque sur l'image
+
+            Parameters:
+            ----------
+                current_frame (int) : index de l'image
+        
+        """
 
         i = current_frame
 
@@ -53,8 +101,24 @@ class Obj():
 
         
     def maskSequence(self, frameInit, initBB, frameBeginTrack, frameEndTrack, tracker):
+        """Lance le tracking d'un objet et maj les bbox l'encadrant sur chaque frame. Ne crée pas réellement de masque, voir bboxTrackingToMask pour cela
+
+            Parameters:
+            ----------
+                frameInit (np.array)  :
+                    image sur laquelle on a initialisé la bbox
+                initBB ( (int,int,int,int) ) :
+                    bbox d'initialisation, sous la forme (x, y, width, height) #NB : à vérifier si c'est pas (x, y, x+w, y+h) directement
+                frameBeginTrack (int) :
+                    index de l'image de début de la séquence
+                frameEndTrack   (int) :
+                    index de l'image de fin de la séquence
+                tracker (string) :
+                    tracker à utiliser pour le suivi sur les frames
+                
+        
+        """
         print("tracker : ", tracker)
-        """Lance le tracking d'un objet et maj les bbox l'encadrant sur chaque frame. Ne crée pas réellement de masque"""
 
         frameInit, initBB, frameBeginTrack, frameEndTrack = int(frameInit), initBB, int(frameBeginTrack), int(frameEndTrack)
         
@@ -190,7 +254,10 @@ class Obj():
 
 
     def bboxTrackingToMask(self):
-        """Convertie les bbox en masques rectangulaires"""
+        """
+        Convertit les bbox de l'objet en masques (rectangulaires) et l'enregistre en attribut (pas sur le disque)
+        
+        """
         for i in range(self.video.nbFrames):
             binaryImage = np.zeros( self.video.frameDimensions, np.uint8)
             (x, y, w, h) = [int(v) for v in self.bbox[i]]
@@ -199,6 +266,14 @@ class Obj():
                 self.mask[i] = binaryImage
 
     def exportMaskToFile(self, location = ""):
+        """
+        Enregistre les masques en attribut sur le disque dans le dossier location/mask/nom_objet
+
+            Parameters:
+            ----------
+                location string:
+                    emplacement sur le disque où enregistrer les masques
+        """
         ###on utilise la librairie Path pour assurer le fonctionnement sous windows ET linux
         folder = os.path.join(location, 'mask')
         if not os.path.isdir(folder):
