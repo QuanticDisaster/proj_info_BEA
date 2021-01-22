@@ -18,6 +18,7 @@ class Video():
     displayBBOX = True
     frameDimensions = (0,0)
     fusedMasks = None
+    videoCapture = None
     
 
     def __init__(self, name, fullPath, controleur):
@@ -29,6 +30,7 @@ class Video():
         vs.release()
         self.controleur = controleur
         self.fusedMasks = [None] * self.nbFrames
+        self.videoCapture = cv2.VideoCapture(self.fullPath)
         
 
     def getObjByName(self,name):
@@ -40,7 +42,7 @@ class Video():
     
     def read(self):
         """lance la lecture de la vidéo via une boucle while dont on ne sort jamais"""
-        vs = cv2.VideoCapture(self.fullPath)
+        vs = self.videoCapture        
         # loop over frames from the video stream
         self.n_frame = 0
         timeToWait =  int( 1000 / vs.get(cv2.CAP_PROP_FPS ))

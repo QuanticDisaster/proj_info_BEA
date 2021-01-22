@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'window2.ui'
+# Form implementation generated from reading ui file 'window.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.1
 #
@@ -273,6 +273,34 @@ class Ui_MainWindow(object):
         self.delete_mask.setObjectName("delete_mask")
         self.horizontalLayout_2.addWidget(self.delete_mask)
         self.verticalLayout_4.addLayout(self.horizontalLayout_2)
+        self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(1000, 570, 271, 41))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.horizontalLayoutWidget.sizePolicy().hasHeightForWidth())
+        self.horizontalLayoutWidget.setSizePolicy(sizePolicy)
+        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label_2 = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_3.addWidget(self.label_2)
+        self.frameToGo = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
+        self.frameToGo.setObjectName("frameToGo")
+        self.horizontalLayout_3.addWidget(self.frameToGo)
+        self.goToButton = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.goToButton.sizePolicy().hasHeightForWidth())
+        self.goToButton.setSizePolicy(sizePolicy)
+        self.goToButton.setMaximumSize(QtCore.QSize(40, 16777215))
+        self.goToButton.setObjectName("goToButton")
+        self.horizontalLayout_3.addWidget(self.goToButton)
+        self.horizontalLayout_3.setStretch(0, 2)
+        self.horizontalLayout_3.setStretch(1, 3)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1527, 21))
@@ -327,4 +355,6 @@ class Ui_MainWindow(object):
         self.debug.setText(_translate("MainWindow", "debug"))
         self.edit_mask.setText(_translate("MainWindow", "créer/modifier"))
         self.delete_mask.setText(_translate("MainWindow", "supprimer"))
+        self.label_2.setText(_translate("MainWindow", "Aller à la frame n° : "))
+        self.goToButton.setText(_translate("MainWindow", "Go"))
         self.loadvideo.setText(_translate("MainWindow", "Load video"))

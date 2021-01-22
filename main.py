@@ -35,6 +35,13 @@ class Controleur():
     def __init__(self,app):
         self.app = app
 
+    def goToFrame(self,idFrame):
+        vs = self.current_video.videoCapture
+        #l'humain compte à partir de 1 donc la frame 1 pour l'humain est la frame 0 pour l'ordi
+        vs.set(cv2.CAP_PROP_POS_FRAMES, idFrame - 1)
+        self.current_video.n_frame = idFrame - 1
+
+        
     def deleteCurrentMask(self, obj):
         currentFrame = self.current_video.n_frame - 1 
         obj.bbox[currentFrame] = (-1, -1, -1, -1)

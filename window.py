@@ -52,6 +52,7 @@ class MyWindow(QtWidgets.QMainWindow):
 
         self.findChild(QPushButton, "delete_mask").clicked.connect(self.deleteMask)
         self.findChild(QPushButton, "edit_mask").clicked.connect(self.editMask)
+        self.findChild(QPushButton, "goToButton").clicked.connect(self.goToFrame)
 
 
         #liste_trackers
@@ -72,6 +73,12 @@ class MyWindow(QtWidgets.QMainWindow):
         ##TODO, delete
         #self.select_video_file_debug()
 
+    def goToFrame(self):
+        idFrame = int( self.findChild(QLineEdit, "frameToGo").text() )
+        self.controleur.goToFrame(idFrame)
+        
+
+        
     def editMask(self):
         liste = self.findChild(QListWidget, "list_mask")
         masque = liste.item(liste.currentRow()).text()
