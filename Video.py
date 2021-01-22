@@ -43,8 +43,7 @@ class Video():
         vs = cv2.VideoCapture(self.fullPath)
         # loop over frames from the video stream
         self.n_frame = 0
-        #vs.get(cv2.CAP_PROP_FPS)
-        timeToWait = 25
+        timeToWait =  int( 1000 / vs.get(cv2.CAP_PROP_FPS ))
         
         #on affiche la première frame lorsqu'une vidéo est chargée
         success, frame = vs.read()
