@@ -7,6 +7,54 @@ import shutil
 
 class Video():
 
+    """
+        objet video
+
+        ...
+
+        Attributes
+        ----------
+            controleur : controleur
+                référence à l'objet controleur qui gère l'application
+            name : string
+                nom de l'objet vidéo
+            fullPath : string
+                emplacement de la vidéo sur le disque
+            nbFrames : int
+                nombres de frame total dans la vidéo
+            objs : list( Obj )
+                liste des objets qui ont été définis sur la vidéo
+            keyPressed : string
+                contient un string renseignant sur l'action qui a été réalisée sur l'interface
+            paused : bool
+                indique si l'utilisateur a mis en pause la vidéo
+            n_frame : int
+                index de la frame qui est lue actuellement
+            displayBBOX : bool
+                indique si on affiche ou non les bbox sur les frames affichées
+            frameDimensions : tuple(int,int)
+                taille des frames
+            fusedMasks : list( array )
+                liste dont le ième élèment correspond au masque des différents objets sur la ième frame
+            videoCapture : opencv.VideoCapture
+                objet permettant la lecture des vidéos dans OpenCV
+
+
+        Methods
+        -------
+            getObjByName 
+                renvoie l'objet dont le nom est renseigné
+            read 
+                lit la vidéo et traite les inputs
+            maskAll 
+                lance le tracking de tous les objets
+            fuseMask
+                fusionne les masques des objets
+            exportFusedMasksToFile 
+                enregistre les masques fusionnés sur le disque
+
+    """
+
     controleur = None
     name = None
     fullPath = None
@@ -22,6 +70,20 @@ class Video():
     
 
     def __init__(self, name, fullPath, controleur):
+        """
+        initialise la classe
+
+            Parameters:
+            ----------
+                name (string) :
+                    nom donné à la vidéo
+                fullPath (string) :
+                    emplacement de la vidéo sur le disque
+                controleur (controleur) :
+                    référence à l'objet controleur qui gère l'application
+                    
+        
+        """
         self.name = name
         self.fullPath = fullPath
         vs = cv2.VideoCapture(self.fullPath)
@@ -34,6 +96,22 @@ class Video():
         
 
     def getObjByName(self,name):
+        """
+        Renvoie l'objet de la vidéo dont le nom est donné est argument
+
+            Parameters:
+            ----------
+                name (string) :
+                    nom de l'objet qu'on cherche
+
+            Return:
+            ------
+                o (Obj):
+                    référence à l'objet que l'on souhaitait
+                    
+        
+        """
+        
         for o in objs:
             if o.name == name:
                 return o
@@ -41,7 +119,11 @@ class Video():
         
     
     def read(self):
-        """lance la lecture de la vidéo via une boucle while dont on ne sort jamais"""
+        """
+        lance la lecture de la vidéo via une boucle while et agit en fonction des actions réalisées par l'utilisateur via self.keyPressed
+        NB : en l'état actuel (23/01/2021), on ne sort jamais de la boucle while
+        
+        """
         vs = self.videoCapture        
         # loop over frames from the video stream
         self.n_frame = 0
@@ -136,6 +218,17 @@ class Video():
         #cv2.destroyAllWindows()
 
     def maskAll(self, tracker ):
+        """
+        lance le tracking de tous les objets de la vidéo via la fonction maskSequence de la classe Obj
+
+            Parameters:
+            ----------
+                tracker (string) :
+                    nom du tracker utilisé
+                    
+        
+        """
+        
         for obj in self.objs:
             for seq in obj.sequences:
                 obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"], tracker )
@@ -144,7 +237,10 @@ class Video():
 
 
     def fuseMask(self):
-        """fusionne les masques de tous les objets"""
+        """
+        fusionne les masques de tous les objets et les stocke dans la liste self.fusedMasks en attribut
+
+        """
         for obj in self.objs:
             obj.bboxTrackingToMask()
             
@@ -164,6 +260,17 @@ class Video():
 
     
     def exportFusedMasksToFile(self, location = ""):
+        """
+        Enregistre les masques de l'attribut fusedMasks sur le disque à l'emplacement donné
+
+            Parameters:
+            ----------
+                location (string) :
+                    emplacement où stocker les masques sur le disque
+                    
+        
+        """
+        
 
         ###on utilise la librairie Path pour assurer le fonctionnement sous windows ET linux
         folder = os.path.join(location, 'mask')

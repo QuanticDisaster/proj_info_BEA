@@ -6,6 +6,30 @@ from windowUI import Ui_MainWindow
 
 
 class MyWindow(QtWidgets.QMainWindow):
+    """
+        classe MyWindow qui représente l'interface graphique et la partie "Vue" de l'application
+
+        ...
+
+        Attributes
+        ----------
+            controleur : controleur
+                référence à l'objet controleur qui gère l'application
+
+        Methods
+        -------
+            getObjByName 
+                renvoie l'objet dont le nom est renseigné
+            read 
+                lit la vidéo et traite les inputs
+            maskAll 
+                lance le tracking de tous les objets
+            fuseMask
+                fusionne les masques des objets
+            exportFusedMasksToFile 
+                enregistre les masques fusionnés sur le disque
+
+    """    
 
     controleur = None
     
@@ -74,12 +98,20 @@ class MyWindow(QtWidgets.QMainWindow):
         #self.select_video_file_debug()
 
     def goToFrame(self):
+        """
+        indique au controleur d'aller à la frame X quand l'utilisateur clique sur "Go"
+        
+        """
         idFrame = int( self.findChild(QLineEdit, "frameToGo").text() )
         self.controleur.goToFrame(idFrame)
         
 
         
     def editMask(self):
+        """
+        informe le controleur de modifier le masque  pour la frame actuelle par un masque manuel
+        
+        """
         liste = self.findChild(QListWidget, "list_mask")
         masque = liste.item(liste.currentRow()).text()
 
@@ -91,6 +123,14 @@ class MyWindow(QtWidgets.QMainWindow):
 
         
     def deleteMask(self):
+        """
+        on supprime le masque de la frame actuelle
+
+            Parameters:
+            ----------
+                current_frame (int) : index de l'image
+        
+        """
         
         ##VUE
         liste = self.findChild(QListWidget, "list_mask")
@@ -112,7 +152,8 @@ class MyWindow(QtWidgets.QMainWindow):
         
     def displayBBOX(self):
         """
-            Active/désactive la visualisation des masques sur la vidéo de l'interface
+        Active/désactive la visualisation des masques sur la vidéo de l'interface
+        
         """
         text = self.findChild(QPushButton, "display_bbox").text()
         if text == "Cacher les bbox":
@@ -123,6 +164,10 @@ class MyWindow(QtWidgets.QMainWindow):
         self.controleur.displayBBOX()
         
     def maskSequence(self):
+        """
+        lance tracking de la séquence
+        
+        """
         tracker = self.findChild(QComboBox, "tracker").currentText()
         obj = self.controleur.getObjByName( self.findChild(QComboBox, "liste_objets").currentText() )
         seq = self.controleur.getSeqByName( obj, self.findChild(QComboBox, "liste_sequences").currentText() )
@@ -130,15 +175,34 @@ class MyWindow(QtWidgets.QMainWindow):
             
         
     def updateInitFrame(self, idFrame):
+        """
+        met à jour l'affichage en indiquant sur quelle frame on a initialisé le masque
+
+            Parameters:
+            ----------
+                idFrame (int) :
+                    index de la frame
+            
+        """
         self.findChild(QLineEdit, "frame_init").setText(str(idFrame))
         
     def readVideo(self):
+        """
+        relance la lecture
+        
+        """
         self.controleur.readVideo()
         
     def pauseVideo(self):
+        """
+        mets en pause la vidéo
+        """
         self.controleur.pauseVideo()
         
     def parameters_changed(self):
+        """
+        indique au controleur que les paramètres de la séquence ont changé. Activé lorsque l'utilisateur modifie les valeurs dans l'interface
+        """
         debut = self.findChild(QLineEdit, "frame_debut").text()
         fin   = self.findChild(QLineEdit, "frame_fin").text()
         init  = self.findChild(QLineEdit, "frame_init").text()
@@ -147,6 +211,15 @@ class MyWindow(QtWidgets.QMainWindow):
         self.controleur.updateParameters(obj,seq,debut,fin,init)
         
     def create_object(self, text = False):
+        """
+        crée un objet de nom 'text' si text est différent de la valeur par défaut
+
+            Parameters:
+            ----------
+                text (string/bool):
+                    nom du nouvel objet
+        
+        """
         ok = True
 
         if text == False:
@@ -187,6 +260,10 @@ class MyWindow(QtWidgets.QMainWindow):
             self.create_seq('default')
 
     def rename_obj(self):
+        """
+        renomme l'objet actuellement sélectionné
+        """
+        
         ok = True
         new_name, ok = QInputDialog.getText(self, "renommer objet", "renommer en ", text = "objet " + str(len(self.controleur.current_video.objs) + 1))
 
@@ -210,6 +287,10 @@ class MyWindow(QtWidgets.QMainWindow):
 
         
     def delete_obj(self):
+        """
+        supprime l'objet actuellement sélectionné
+        
+        """
         current_obj = self.findChild(QComboBox,"liste_objets").currentText()
         #####CONTROLEUR#####
         for o in self.controleur.current_video.objs:
@@ -225,6 +306,15 @@ class MyWindow(QtWidgets.QMainWindow):
             self.create_object("default")
 
     def create_seq(self, text = False):
+        """
+        crée une séquence de nom 'text' si text est différent de la valeur par défaut
+
+            Parameters:
+            ----------
+                text (string/bool):
+                    nom de la nouvelle séquence
+        
+        """
         ok = True
         current_obj = self.controleur.getObjByName(self.findChild(QComboBox,"liste_objets").currentText())
         
@@ -258,6 +348,9 @@ class MyWindow(QtWidgets.QMainWindow):
             self.findChild(QComboBox,"liste_sequences").setCurrentIndex( self.findChild(QComboBox,"liste_sequences").count() - 1)
 
     def rename_seq(self):
+        """
+        renomme la séquence actuellement sélectionnée
+        """
         ok = True
         current_obj = self.controleur.getObjByName(self.findChild(QComboBox,"liste_objets").currentText())
         new_name, ok = QInputDialog.getText(self, "renommer séquence", "renommer en ", text = "sequence " + str(len(current_obj.sequences) + 1))
@@ -286,6 +379,10 @@ class MyWindow(QtWidgets.QMainWindow):
             
         
     def delete_seq(self):
+        """
+        supprime la séquence actuellement sélectionnée
+        
+        """
         current_obj_name = self.findChild(QComboBox,"liste_objets").currentText()
         current_obj = self.controleur.getObjByName(current_obj_name)
         current_seq_name = self.findChild(QComboBox,"liste_sequences").currentText()
@@ -303,6 +400,10 @@ class MyWindow(QtWidgets.QMainWindow):
             self.create_seq("default")
 
     def changeObject(self):
+        """
+        appelé lorsque l'utilisateur change d'objet. met à jour les paramètres affichés en conséquence (séquence, nom objet etc...)
+        
+        """
 
         self.findChild(QComboBox,"liste_sequences").clear()     
         current_obj = self.controleur.getObjByName(self.findChild(QComboBox,"liste_objets").currentText())
@@ -313,6 +414,10 @@ class MyWindow(QtWidgets.QMainWindow):
                     self.findChild(QComboBox,"liste_sequences").addItem(s["name"])
 
     def changeSequence(self):
+        """
+        appelé lorsque l'utilisateur change de séquence. met à jour les paramètres affichés en conséquence (paramètres etc...)
+        
+        """
         current_obj = self.controleur.getObjByName(self.findChild(QComboBox,"liste_objets").currentText())
         if current_obj is not None:
             current_seq = self.controleur.getSeqByName(current_obj, self.findChild(QComboBox,"liste_sequences").currentText())
@@ -323,6 +428,10 @@ class MyWindow(QtWidgets.QMainWindow):
 
         
     def select_video_file(self):
+        """
+        Ouvre une fenêtre pour que l'utilisateur choisisse la vidéo à charger
+        
+        """
         print("good !")
         #choix du fichier
         filename, _filter = QFileDialog.getOpenFileName(
@@ -354,6 +463,19 @@ class MyWindow(QtWidgets.QMainWindow):
             
 
     def showFrame(self, frame, id_frame, nbFrames):
+        """
+        affiche une image
+
+            Parameters:
+            ----------
+                frame (array):
+                    image à afficher
+                id_frame (int) :
+                    index de la frame à afficher
+                nbFrames (int) :
+                    nombre total de frames sur la vidéo
+        
+        """
 
         #affichage image
         h, w = self.findChild(QLabel, "label").size().height(), self.findChild(QLabel, "label").size().width()

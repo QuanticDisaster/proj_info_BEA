@@ -28,13 +28,13 @@ class Obj():
 
         Methods
         -------
-            manualBBOX
+            manualBBOX 
                 permet de créer manuellement une bbox
-            maskSequence
+            maskSequence 
                 traque un objet sur la séquence
-            bboxTrackingToMask
+            bboxTrackingToMask 
                 convertit les bbox en masques rectangulaires
-            exportMaskToFile
+            exportMaskToFile 
                 enregistre les masques sur le disque
 
     """
@@ -101,7 +101,8 @@ class Obj():
 
         
     def maskSequence(self, frameInit, initBB, frameBeginTrack, frameEndTrack, tracker):
-        """Lance le tracking d'un objet et maj les bbox l'encadrant sur chaque frame. Ne crée pas réellement de masque, voir bboxTrackingToMask pour cela
+        """
+        Lance le tracking d'un objet et maj les bbox l'encadrant sur chaque frame. Ne crée pas réellement de masque, voir bboxTrackingToMask pour cela
 
             Parameters:
             ----------
