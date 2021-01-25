@@ -175,7 +175,9 @@ class Video():
             elif self.keyPressed == "select_ROI":
                 # select the bounding box of the object we want to track (make
                 # sure you press ENTER or SPACE after selecting the ROI)
-                initBB = cv2.selectROI("Frame", frame, fromCenter=False,
+                #on crée une fenête avec resizeable=true (enfin je suppose que c'est ce que le "2" signifie)
+                cv2.namedWindow("Image",2)
+                initBB = cv2.selectROI("Image", frame, fromCenter=False,
                                        showCrosshair=True)
                 cv2.destroyAllWindows()
                 self.controleur.updateBBOX(self.n_frame, initBB)

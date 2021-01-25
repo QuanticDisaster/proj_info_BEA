@@ -87,7 +87,9 @@ class Obj():
         frame = vs.read()[1]
                 
         ##changement bbox
-        box = cv2.selectROI("Frame", frame, fromCenter=False,
+        #on crée une fenête avec resizeable=true (enfin je suppose que c'est ce que le "2" signifie)
+        cv2.namedWindow("Image",2)
+        box = cv2.selectROI("Image", frame, fromCenter=False,
                                        showCrosshair=True)
         cv2.destroyAllWindows()
         self.bbox[i] = box
@@ -153,105 +155,108 @@ class Obj():
             tracker_forward = OPENCV_OBJECT_TRACKERS[tracker]()
             tracker_backward = OPENCV_OBJECT_TRACKERS[tracker]()
 
-            vs = cv2.VideoCapture(self.video.fullPath)
-            # initialize the FPS throughput estimator
-            fps = None
+        vs = cv2.VideoCapture(self.video.fullPath)
+        # initialize the FPS throughput estimator
+        fps = None
 
-            ####################  handle FORWARD tracking ########################
+        #création d'une fenête pour afficher les images
+        cv2.namedWindow("Frame", 2)
 
-            vs.set(cv2.CAP_PROP_POS_FRAMES, frameInit)
-            fps = FPS().start()
-            for i in range(frameInit, frameEndTrack):
+        ####################  handle FORWARD tracking ########################
 
-                frame = vs.read()[1]
-                #frame = imutils.resize(frame, width=1000)
-                (H, W) = frame.shape[:2]
+        vs.set(cv2.CAP_PROP_POS_FRAMES, frameInit)
+        fps = FPS().start()
+        for i in range(frameInit, frameEndTrack):
 
-
-
-                if i == frameInit:
-                    tracker_forward.init(frame, initBB)
-                    self.bbox[frameInit] = initBB
-
-                (success, box) = tracker_forward.update(frame)
-                # check to see if the tracking was a success
-                if success:
-                    self.bbox[i] = box
-                    
-                    (x, y, w, h) = [int(v) for v in box]
-                    cv2.rectangle(frame, (x, y), (x + w, y + h),
-                                  (0, 255, 0), 2)
-
-                # update the FPS counter
-                fps.update()
-                fps.stop()
-                # initialize the set of information we'll be displaying on
-                # the frame
-                info = [
-                    ("frame", i),
-                    ("Success", "Yes" if success else "No"),
-                    ("FPS", "{:.2f}".format(fps.fps())),
-                    ("Progress (%)", round((i - frameInit) / max(1,(frameEndTrack - frameInit)), 2))
-                ]
-                # loop over the info tuples and draw them on our frame
-                for (i, (k, v)) in enumerate(info):
-                    text = "{}: {}".format(k, v)
-                    cv2.putText(frame, text, (10, H - ((i * 20) + 20)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-
-                # show the output frame
-                cv2.imshow("Frame", frame)
-                # unused, but necessary to make application work otherwise grey windows appears
-                key = cv2.waitKey(1) & 0xFF
+            frame = vs.read()[1]
+            #frame = imutils.resize(frame, width=1000)
+            (H, W) = frame.shape[:2]
 
 
-            ####################  handle BACKWARD tracking ########################
 
-            fps = FPS().start()
-            vs.set(cv2.CAP_PROP_POS_FRAMES, frameInit)
-            for i in range(frameInit, frameBeginTrack - 1, -1):
-                vs.set(cv2.CAP_PROP_POS_FRAMES, i)
-                frame = vs.read()[1]
-                #frame = imutils.resize(frame, width=1000)
-                (H, W) = frame.shape[:2]
+            if i == frameInit:
+                tracker_forward.init(frame, initBB)
+                self.bbox[frameInit] = initBB
 
-                if i == frameInit:
-                    tracker_backward.init(frame, initBB)
-                    self.bbox[frameInit] = initBB
+            (success, box) = tracker_forward.update(frame)
+            # check to see if the tracking was a success
+            if success:
+                self.bbox[i] = box
+                
+                (x, y, w, h) = [int(v) for v in box]
+                cv2.rectangle(frame, (x, y), (x + w, y + h),
+                              (0, 255, 0), 2)
 
-                (success, box) = tracker_backward.update(frame)
-                # check to see if the tracking was a success
-                if success:
-                    self.bbox[i] = box
-                    (x, y, w, h) = [int(v) for v in box]
-                    cv2.rectangle(frame, (x, y), (x + w, y + h),
-                                  (0, 255, 0), 2)
-                # update the FPS counter
-                fps.update()
-                fps.stop()
-                # initialize the set of information we'll be displaying on
-                # the frame
-                info = [
-                    ("frame", i),
-                    ("Success", "Yes" if success else "No"),
-                    ("FPS", "{:.2f}".format(fps.fps())),
-                    ("Progress (%)", round(1 - (i - frameBeginTrack) / max(1,(frameInit - frameBeginTrack)), 2))
-                ]
-                # loop over the info tuples and draw them on our frame
-                for (i, (k, v)) in enumerate(info):
-                    text = "{}: {}".format(k, v)
-                    cv2.putText(frame, text, (10, H - ((i * 20) + 20)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+            # update the FPS counter
+            fps.update()
+            fps.stop()
+            # initialize the set of information we'll be displaying on
+            # the frame
+            info = [
+                ("frame", i),
+                ("Success", "Yes" if success else "No"),
+                ("FPS", "{:.2f}".format(fps.fps())),
+                ("Progress (%)", round((i - frameInit) / max(1,(frameEndTrack - frameInit)), 2))
+            ]
+            # loop over the info tuples and draw them on our frame
+            for (i, (k, v)) in enumerate(info):
+                text = "{}: {}".format(k, v)
+                cv2.putText(frame, text, (10, H - ((i * 20) + 20)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-                # show the output frame
-                cv2.imshow("Frame", frame)
-                # unused, but necessary to make application work otherwise grey windows appears
-                key = cv2.waitKey(1) & 0xFF
+            # on affiche l'image de sortie sur la cv2.namedWindow "frame" créée plus haut
+            cv2.imshow("Frame", frame)
+            # unused, but necessary to make application work otherwise grey windows appears
+            key = cv2.waitKey(1) & 0xFF
 
-            # otherwise, release the file pointer
-            vs.release()
-            # close all windows
-            cv2.destroyAllWindows()
+
+        ####################  handle BACKWARD tracking ########################
+
+        fps = FPS().start()
+        vs.set(cv2.CAP_PROP_POS_FRAMES, frameInit)
+        for i in range(frameInit, frameBeginTrack - 1, -1):
+            vs.set(cv2.CAP_PROP_POS_FRAMES, i)
+            frame = vs.read()[1]
+            #frame = imutils.resize(frame, width=1000)
+            (H, W) = frame.shape[:2]
+
+            if i == frameInit:
+                tracker_backward.init(frame, initBB)
+                self.bbox[frameInit] = initBB
+
+            (success, box) = tracker_backward.update(frame)
+            # check to see if the tracking was a success
+            if success:
+                self.bbox[i] = box
+                (x, y, w, h) = [int(v) for v in box]
+                cv2.rectangle(frame, (x, y), (x + w, y + h),
+                              (0, 255, 0), 2)
+            # update the FPS counter
+            fps.update()
+            fps.stop()
+            # initialize the set of information we'll be displaying on
+            # the frame
+            info = [
+                ("frame", i),
+                ("Success", "Yes" if success else "No"),
+                ("FPS", "{:.2f}".format(fps.fps())),
+                ("Progress (%)", round(1 - (i - frameBeginTrack) / max(1,(frameInit - frameBeginTrack)), 2))
+            ]
+            # loop over the info tuples and draw them on our frame
+            for (i, (k, v)) in enumerate(info):
+                text = "{}: {}".format(k, v)
+                cv2.putText(frame, text, (10, H - ((i * 20) + 20)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+
+            # on affiche l'image de sortie sur la cv2.namedWindow "frame" créée plus haut
+            cv2.imshow("Frame", frame)
+            # unused, but necessary to make application work otherwise grey windows appears
+            key = cv2.waitKey(1) & 0xFF
+
+        # otherwise, release the file pointer
+        vs.release()
+        # close all windows
+        cv2.destroyAllWindows()
 
 
     def bboxTrackingToMask(self):
