@@ -5,6 +5,7 @@ import numpy as np
 from imutils.video import FPS
 import os
 import shutil
+import time
 
 
 
@@ -258,6 +259,299 @@ class Obj():
         # close all windows
         cv2.destroyAllWindows()
 
+    def maskGrosObjet(self, frameInit, initBB, frameBeginTrack, frameEndTrack):
+        print("track")
+        frameInit, initBB, frameBeginTrack, frameEndTrack = int(frameInit), initBB, int(frameBeginTrack), int(frameEndTrack)
+
+
+        maskInit = self.drawMask(frameInit)
+
+
+        vs = cv2.VideoCapture(self.video.fullPath)
+        # initialize the FPS throughput estimator
+        fps = None
+
+        #création d'une fenête pour afficher les images
+        cv2.namedWindow("Frame", 2)
+
+        ####################  handle FORWARD tracking ########################
+
+        vs.set(cv2.CAP_PROP_POS_FRAMES, frameInit)
+        frame = vs.read()[1]
+        
+        #on croppe l'image pour ne garder que ce qui est dans le rectangle englobant le masque
+        cropped = frame#frame[np.ix_(maskInit.any(1), maskInit.any(0))]
+
+        
+
+        #-------------------------------------------------------
+        
+
+
+        
+        mask = maskInit
+        for f_index in range(frameInit+1, frameEndTrack):
+            
+            # l'objet à trouver est la partie croppé, dans la frame suivante
+            #img_object = cropped
+            img_scene = vs.read()[1]
+            
+            #-------------------------- Segmentation -------------------------------
+            tic = time.time()
+            src = cv2.GaussianBlur(img_scene,(13,13),0)
+            src_lab = cv2.cvtColor(src,cv2.COLOR_BGR2LAB) # convert to LAB
+            cv_slic = cv2.ximgproc.createSuperpixelSLIC(src_lab, region_size = 200,algorithm=100)
+            cv_slic.iterate()
+            toc = time.time()
+
+            print("durée segmentation : ", toc - tic)
+
+
+            #---------------------------- Erosien, dilatation-------------------------
+
+            ##érosion du masque
+            #TODO : adapter taille du kernel à la taile de l'objet ?
+            #kernel = np.ones((5,5), np.uint8)
+            #core_mask = cv2.erode(mask, kernel, iterations=1)
+
+            #build the new mask
+            new_mask = cv_slic.getLabelContourMask()
+
+            display = img_scene
+            display[new_mask > 1] = 0
+
+            cv2.imshow('Segmentation', display)
+            cv2.waitKey(1)
+
+            #update the mask to find in the next frame
+            cropped = img_scene[np.ix_(maskInit.any(1), maskInit.any(0))]
+
+
+            pixIndexRegion = cv_slic.getLabels()
+
+            new_mask = 125 * np.ones( mask.shape)
+            #je ne sais plus pourquoi j'ai mis ces deux lignes mais je crois qu'il y a une raison
+            new_mask[0][0] = 0
+            new_mask[0][1] = 255
+
+            
+            ##éroder le masque et considérer l'intérieur comme appartenant au masque de manière sure
+            kernel = np.ones((33,33), np.uint8)
+            erode = cv2.erode(mask, kernel)
+            #cv2.imshow("erode", erode)
+            #cv2.waitKey(1)
+            ##dilater le masque et considérer l'extérieur comme appartenant au masque de manière sure
+            dilate = cv2.dilate(mask, kernel)
+            #cv2.imshow("dilate", dilate)
+            #cv2.waitKey(1)
+            
+            new_mask[ erode == 255 ] = 255
+            new_mask[ dilate == 0] = 0
+
+            print(np.max(new_mask))
+            print(np.min(new_mask))
+            print((new_mask == 125).any())
+            #import pdb; pdb.set_trace()
+
+            #on cherche l'id des régiosn appartenant au masque sûr et au non-masque sûr
+            #classe 1 = masque
+            #classe 2 = non masque
+            index_classe1_regions = pixIndexRegion[ new_mask == 255]
+            index_classe2_regions = pixIndexRegion[ new_mask == 0 ]
+
+            #import pdb; pdb.set_trace()
+
+
+            #------------------------------K-moyennes---------------------------------
+
+            incomplete_labels_img = 125 * np.ones( (img_scene.shape[0], img_scene.shape[1]) )
+
+            #on applique kmeans sur la région masque sûr et sur la région non-masque sûr
+            # convert to RGB
+            tic = time.time()
+            image = cv2.cvtColor(img_scene, cv2.COLOR_BGR2RGB)
+
+            #we take only pixels in mask ( we end with a 2D shaped array, but it's okay because kmeans asks for a 2D array)
+            pixel_values1 = image[new_mask == 255 ]
+            # covert to float
+            pixel_values1 = np.float32(pixel_values1)
+            # define stopping criteria
+            criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2)
+            # number of clusters (K)
+            k = 6
+            _, labels1, (centers1) = cv2.kmeans(pixel_values1, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+            # convert back to 8 bit values
+            centers1 = np.uint8(centers1)
+            # flatten the labels array
+            labels1 = labels1.flatten()
+            # convert all pixels to the color of the centroids
+            segmented_image1 = centers1[labels1.flatten()]
+            # reshape back to the original image dimension
+            
+            idx = np.where(new_mask == 255)
+            image[idx[0], idx[1] ] = segmented_image1
+            incomplete_labels_img[ idx[0], idx[1] ] = labels1
+            #segmented_image1 = segmented_image1.reshape(image.shape)
+            # show the image
+            #plt.imshow(segmented_image2)
+            #plt.show()
+
+            pixel_values2 = image[new_mask == 0 ]
+            pixel_values2 = np.float32(pixel_values2)
+            criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2)
+            k = 6
+            _, labels2, (centers2) = cv2.kmeans(pixel_values2, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+            centers2 = np.uint8(centers2)
+            labels2 = labels2.flatten()
+            segmented_image2 = centers2[labels2.flatten()]
+            
+            idx = np.where(new_mask == 0)
+            image[idx[0], idx[1] ] = segmented_image2
+            incomplete_labels_img[ idx[0], idx[1] ] = labels2 + np.max(labels1)
+            #segmented_image1 = segmented_image1.reshape(image.shape)
+            # show the image
+
+
+            #label_map = -1 * np.ones(( image.shape[0], image.shape[1] ))
+            #image[idx[0], idx[1] ] = labels2
+            toc = time.time()
+            print("durée des k moyennes : ", toc - tic )
+            print("end")
+
+
+
+
+            #-------------------------assignation des régions indécises---------------
+
+            #TODO : je pense que cette partie peut être amélioré (temps de calcul notamment) en calculant
+            #intelligemment avec numpy plutôt qu'avec les boucles
+            
+            centers = np.vstack((centers1, centers2))
+            labels = np.hstack( (labels1, labels2 + np.max(labels1) ))
+
+
+            #On associe chaque région "indécise" de la segmentation à une des classes
+            distance = []
+            means = []
+            centers = centers.astype(float)
+            classes = []
+            for i,region_index in enumerate(np.unique(pixIndexRegion[ new_mask == 125 ])):
+                if i % 100 == 0:
+                    print(i)
+                im =  img_scene[pixIndexRegion == region_index ]
+                mR, mV, mB = np.mean( im[:,0]), np.mean(im[:,1]), np.mean(im[:,2])
+                #import pdb; pdb.set_trace()
+                means.append([mR, mV, mB] )
+
+                d = np.sqrt( (mR - centers[:,0]) ** 2 +
+                          (mV - centers[:,1]) ** 2 +
+                          (mB - centers[:,2]) ** 2 )
+                distance.append( d )
+
+                if i < 10:
+                    print("distance", d)
+                    print("argmin : ", np.argmin(d))
+                classes.append( np.argmin(d) )
+            classes = np.array(classes)
+            distance = np.array(distance)
+            distance = distance.reshape( distance.shape[1], distance.shape[0] )
+
+
+            for i,region_index in enumerate(np.unique(pixIndexRegion[ new_mask == 125 ])):
+                if i % 100 == 0:
+                    print(i)
+                image[pixIndexRegion == region_index ] = centers[classes][i]
+                incomplete_labels_img[ pixIndexRegion == region_index ] = classes[i]
+
+            labels_img = incomplete_labels_img
+            #import matplotlib.pyplot as plt
+            #plt.imshow(image)
+            cv2.imshow("sortie",image)
+            cv2.waitKey(1)
+
+            
+
+            temp_mask = np.zeros( (img_scene.shape[0], img_scene.shape[1] ))
+            temp_mask[ np.isin(labels_img, labels1) ] = 255
+            display_new_mask = cv2.addWeighted(img_scene,0.8,(np.stack((temp_mask,)*3, axis = -1)).astype(np.uint8),0.25,0)
+            
+            cv2.imshow("nouveau masque enregistré", display_new_mask)
+            cv2.waitKey(1)
+
+            cv2.imshow("labels",labels_img.astype(np.uint8))
+            cv2.waitKey(1)
+            #plt.figure()
+            #plt.imshow(segmented_image2)
+            #plt.show()
+            #import pdb; pdb.set_trace()
+            cropped = new_mask
+            mask = new_mask
+            
+            added_image = cv2.addWeighted(img_scene,0.8,(np.stack((new_mask,)*3, axis = -1)).astype(np.uint8),0.25,0)         
+            cv2.imshow('mask',added_image)
+            cv2.waitKey(200)
+
+        # otherwise, release the file pointer
+        #vs.release()
+        # close all windows
+        #cv2.destroyAllWindows()
+
+            
+        
+    def drawMask(self, im_index):
+        drawing=False # true if mouse is pressed
+        mode=True # if True, draw rectangle. Press 'm' to toggle to curve
+
+        poly = []
+
+
+        # mouse callback function
+        def begueradj_draw(event,former_x,former_y,flags,param):
+            global current_former_x,current_former_y
+            nonlocal drawing, mode
+
+            if event==cv2.EVENT_LBUTTONDOWN:
+                drawing=True
+                current_former_x,current_former_y=former_x,former_y
+
+            elif event==cv2.EVENT_MOUSEMOVE:
+                if drawing==True:
+                    if mode==True:
+                        cv2.line(im,(current_former_x,current_former_y),(former_x,former_y),(0,0,255),2)
+                        poly.append((current_former_x, current_former_y))
+                        current_former_x = former_x
+                        current_former_y = former_y
+                        #print former_x,former_y
+            elif event==cv2.EVENT_LBUTTONUP:
+                drawing=False
+                if mode==True:
+                    cv2.line(im,(current_former_x,current_former_y),(former_x,former_y),(0,0,255),5)
+                    current_former_x = former_x
+                    current_former_y = former_y
+            return former_x,former_y
+    
+
+        vs = cv2.VideoCapture(self.video.fullPath)
+        vs.set(cv2.CAP_PROP_POS_FRAMES, im_index)
+        im = vs.read()[1]
+        cv2.namedWindow("Bill BEGUERADJ OpenCV")
+        cv2.setMouseCallback('Bill BEGUERADJ OpenCV',begueradj_draw)
+        while(1):
+            cv2.imshow('Bill BEGUERADJ OpenCV',im)
+            k=cv2.waitKey(1)&0xFF
+            if k==27:
+                break
+        cv2.destroyAllWindows()
+                
+        contours = np.array(poly)
+        mask = np.zeros( tuple(im.shape[0:2]) ) # create a single channel 200x200 pixel black image 
+        cv2.fillPoly(mask, pts =[contours], color=(255,255,255))
+        #cv2.imshow(" ", mask)
+        #cv2.waitKey(1)
+
+        return mask
+
+                    
 
     def bboxTrackingToMask(self):
         """

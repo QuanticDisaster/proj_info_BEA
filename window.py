@@ -65,7 +65,7 @@ class MyWindow(QtWidgets.QMainWindow):
         self.findChild(QPushButton, "initMask").clicked.connect(self.controleur.initializeMask)
 
         self.findChild(QPushButton, "mask_sequence").clicked.connect(self.maskSequence)
-        self.findChild(QPushButton, "mask_all").clicked.connect(self.controleur.maskAll)
+        self.findChild(QPushButton, "mask_sequence_big").clicked.connect(self.maskSequenceBig)
         self.findChild(QPushButton, "display_bbox").clicked.connect(self.displayBBOX)
 
         self.findChild(QPushButton, "export_fused_masks").clicked.connect(self.controleur.exportFusedMasks)
@@ -172,6 +172,15 @@ class MyWindow(QtWidgets.QMainWindow):
         obj = self.controleur.getObjByName( self.findChild(QComboBox, "liste_objets").currentText() )
         seq = self.controleur.getSeqByName( obj, self.findChild(QComboBox, "liste_sequences").currentText() )
         self.controleur.maskSequence(obj,seq, tracker)
+
+    def maskSequenceBig(self):
+        """
+        lance le masquage d'un gros objet
+        
+        """
+        obj = self.controleur.getObjByName( self.findChild(QComboBox, "liste_objets").currentText() )
+        seq = self.controleur.getSeqByName( obj, self.findChild(QComboBox, "liste_sequences").currentText() )
+        self.controleur.maskSequenceBig(obj,seq)
             
         
     def updateInitFrame(self, idFrame):

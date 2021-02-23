@@ -219,6 +219,21 @@ class Controleur():
         obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"], tracker )
         self.current_video.keyPressed = "refresh"
 
+    def maskSequenceBig(self, obj, seq):
+        """
+        lance le masquage d'un gros objet
+
+            Parameters:
+            ----------
+                obj (Obj) :
+                    objet à tracker
+                seq (dict):
+                    séquence à traiter
+                
+        """
+        obj.maskGrosObjet( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"] )
+        self.current_video.keyPressed = "refresh"
+        
     def maskAll(self, tracker):
         """
         lance le tracking de tous les objets

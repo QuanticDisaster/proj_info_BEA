@@ -417,16 +417,12 @@
      <item>
       <widget class="QPushButton" name="mask_sequence">
        <property name="text">
-        <string>Traiter la séquence</string>
+        <string>Tracker petit objet</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mask_all">
-       <property name="text">
-        <string>Traiter la vidéo</string>
-       </property>
-      </widget>
+      <widget class="QComboBox" name="tracker"/>
      </item>
      <item>
       <widget class="QPushButton" name="export_object_mask">
@@ -445,42 +441,6 @@ masques de l'objet</string>
       </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QPushButton" name="display_bbox">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>600</y>
-      <width>158</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Cacher les bbox</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="tracker">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>650</y>
-      <width>94</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="debug">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>710</y>
-      <width>97</width>
-      <height>33</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>debug</string>
-    </property>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget_4">
     <property name="geometry">
@@ -563,6 +523,39 @@ masques de l'objet</string>
        </property>
        <property name="text">
         <string>Go</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_5">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>590</y>
+      <width>204</width>
+      <height>181</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <item>
+      <widget class="QPushButton" name="mask_sequence_big">
+       <property name="text">
+        <string>Masquer un gros objet (bêta)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="display_bbox">
+       <property name="text">
+        <string>Cacher les bbox</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="debug">
+       <property name="text">
+        <string>debug</string>
        </property>
       </widget>
      </item>
