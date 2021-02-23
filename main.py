@@ -125,6 +125,7 @@ class Controleur():
         #l'humain compte à partir de 1 donc la frame 1 pour l'humain est la frame 0 pour l'ordi
         vs.set(cv2.CAP_PROP_POS_FRAMES, idFrame - 1)
         self.current_video.n_frame = idFrame - 1
+        self.current_video.keyPressed = "refresh"
 
         
     def deleteCurrentMask(self, obj):
@@ -215,8 +216,8 @@ class Controleur():
                     tracker à utiliser
                 
         """
-        print(" masquage idFrmeInit ?: ",seq["idFrameInit"])
-        obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"], tracker ) 
+        obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"], tracker )
+        self.current_video.keyPressed = "refresh"
 
     def maskAll(self, tracker):
         """
