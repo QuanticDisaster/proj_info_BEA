@@ -294,6 +294,7 @@ class Obj():
             shutil.rmtree(subfolder)
             os.mkdir(subfolder)
 
+        #Enregistrement des masques tif
         for i,m in enumerate(self.mask):
             if m is not None:
                 filename = os.path.join(subfolder, "frame_" + str(i) + ".tif")
@@ -301,5 +302,16 @@ class Obj():
                     cv2.imwrite(filename, m)
                 except:
                     print("couldn't save file {}".format(filename))
-        
-        
+                    
+                with open(os.path.join(subfolder, "frame_" + str(i) + ".xml"), "w") as text_file:
+                    text_file.write("<FileOriMnt>\n")
+                    text_file.write("<NameFileMnt>.\\frame_{0}.tif</NameFileMnt>\n".format(i))
+                    text_file.write("<NombrePixels>{0} {1}</NombrePixels>\n".format( m.shape[0], m.shape[1] ))
+                    text_file.write("<OriginePlani>0 0</OriginePlani>\n")
+                    text_file.write("<ResolutionPlani>1 1</ResolutionPlani>\n")
+                    text_file.write("<OrigineAlti>0</OrigineAlti>\n")
+                    text_file.write("<ResolutionAlti>1</ResolutionAlti>\n")
+                    text_file.write("<Geometrie>eGeomMNTFaisceauIm1PrCh_Px1D</Geometrie>\n")
+                    text_file.write("</FileOriMnt>\n")
+                                    
+                                    

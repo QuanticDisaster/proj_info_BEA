@@ -168,6 +168,7 @@ class MyWindow(QtWidgets.QMainWindow):
         lance tracking de la séquence
         
         """
+        
         tracker = self.findChild(QComboBox, "tracker").currentText()
         obj = self.controleur.getObjByName( self.findChild(QComboBox, "liste_objets").currentText() )
         seq = self.controleur.getSeqByName( obj, self.findChild(QComboBox, "liste_sequences").currentText() )
@@ -184,6 +185,7 @@ class MyWindow(QtWidgets.QMainWindow):
                     index de la frame
             
         """
+        
         self.findChild(QLineEdit, "frame_init").setText(str(idFrame))
         
     def readVideo(self):
