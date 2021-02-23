@@ -288,7 +288,6 @@ class Video():
             shutil.rmtree(subfolder)
             os.mkdir(subfolder)
 
-        #Enregistrement des masques tif et xml (NB : honnêtement sur windows, 2 fois sur 3 l'explorateur bloque l'écriture en disant qu'un autre processus utilise déjà le dossier/fichier)
         for i,m in enumerate(self.fusedMasks):
             if m is not None:
                 filename = os.path.join(subfolder, "frame_" + str(i) + ".tif")

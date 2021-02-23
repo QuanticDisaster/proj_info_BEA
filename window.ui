@@ -91,7 +91,7 @@
      <rect>
       <x>40</x>
       <y>50</y>
-      <width>441</width>
+      <width>454</width>
       <height>501</height>
      </rect>
     </property>
@@ -283,34 +283,6 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="frameinit">
-       <item>
-        <widget class="QLabel" name="label_frame_init">
-         <property name="text">
-          <string>Frame d'initialisation du masque : </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="initMask">
-         <property name="text">
-          <string>Initialiser masque</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="frame_init">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
       <layout class="QHBoxLayout" name="framefin">
        <property name="sizeConstraint">
         <enum>QLayout::SetFixedSize</enum>
@@ -329,6 +301,37 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="frameinit">
+       <item>
+        <widget class="QLabel" name="label_frame_init">
+         <property name="text">
+          <string>Frame d'initialisation du masque : </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="initMask">
+         <property name="text">
+          <string>Initialiser masque</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="frame_init">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>

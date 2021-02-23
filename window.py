@@ -53,7 +53,6 @@ class MyWindow(QtWidgets.QMainWindow):
         self.findChild(QComboBox, "liste_sequences").currentIndexChanged.connect(self.changeSequence)
         self.findChild(QLineEdit, "frame_debut").textEdited.connect(self.parameters_changed)
         self.findChild(QLineEdit, "frame_fin").textEdited.connect(self.parameters_changed)
-        self.findChild(QLineEdit, "frame_init").textEdited.connect(self.parameters_changed)
 
         self.findChild(QPushButton, "read").clicked.connect(self.readVideo)
         self.findChild(QPushButton, "pause").clicked.connect(self.pauseVideo)
@@ -186,7 +185,7 @@ class MyWindow(QtWidgets.QMainWindow):
             
         """
         
-        self.findChild(QLineEdit, "frame_init").setText(str(idFrame))
+        self.findChild(QLabel, "frame_init").setText(str(idFrame))
         
     def readVideo(self):
         """
@@ -207,7 +206,7 @@ class MyWindow(QtWidgets.QMainWindow):
         """
         debut = self.findChild(QLineEdit, "frame_debut").text()
         fin   = self.findChild(QLineEdit, "frame_fin").text()
-        init  = self.findChild(QLineEdit, "frame_init").text()
+        init  = self.findChild(QLabel, "frame_init").text()
         obj   = self.findChild(QComboBox, "liste_objets").currentText()
         seq   = self.findChild(QComboBox, "liste_sequences").currentText()
         self.controleur.updateParameters(obj,seq,debut,fin,init)
@@ -253,7 +252,7 @@ class MyWindow(QtWidgets.QMainWindow):
                 self.findChild(QComboBox, "liste_sequences").removeItem(0)
 
             self.findChild(QLineEdit, "frame_debut").setText("")
-            self.findChild(QLineEdit, "frame_init").setText("")
+            self.findChild(QLabel, "frame_init").setText("")
             self.findChild(QLineEdit, "frame_fin").setText("")
 
             self.findChild(QComboBox,"liste_objets").setCurrentIndex( self.findChild(QComboBox,"liste_objets").count() - 1)
@@ -344,7 +343,7 @@ class MyWindow(QtWidgets.QMainWindow):
             self.findChild(QComboBox,"liste_sequences").addItem(text)
 
             self.findChild(QLineEdit, "frame_debut").setText("")
-            self.findChild(QLineEdit, "frame_init").setText("")
+            self.findChild(QLabel, "frame_init").setText("")
             self.findChild(QLineEdit, "frame_fin").setText("")
 
             self.findChild(QComboBox,"liste_sequences").setCurrentIndex( self.findChild(QComboBox,"liste_sequences").count() - 1)
@@ -376,7 +375,7 @@ class MyWindow(QtWidgets.QMainWindow):
             
             seq = self.controleur.getSeqByName(new_name)
             self.findChild(QLineEdit, "frame_debut").setText(seq["idFrameBeginTrack"])
-            self.findChild(QLineEdit, "frame_init").setText(seq["idFrameEndTrack"])
+            self.findChild(QLabel, "frame_init").setText(seq["idFrameEndTrack"])
             self.findChild(QLineEdit, "frame_fin").setText(seq["idFrameInit"])
             
         
@@ -424,7 +423,7 @@ class MyWindow(QtWidgets.QMainWindow):
         if current_obj is not None:
             current_seq = self.controleur.getSeqByName(current_obj, self.findChild(QComboBox,"liste_sequences").currentText())
             if current_seq is not None:
-                self.findChild(QLineEdit,"frame_init").setText(str(current_seq["idFrameInit"]))
+                self.findChild(QLabel,"frame_init").setText(str(current_seq["idFrameInit"]))
                 self.findChild(QLineEdit,"frame_debut").setText(str(current_seq["idFrameBeginTrack"]))
                 self.findChild(QLineEdit,"frame_fin").setText(str(current_seq["idFrameEndTrack"]))
 
@@ -453,7 +452,7 @@ class MyWindow(QtWidgets.QMainWindow):
             self.findChild(QComboBox, "liste_sequences").clear()
 
             self.findChild(QLineEdit, "frame_debut").setText("")
-            self.findChild(QLineEdit, "frame_init").setText("")
+            self.findChild(QLabel, "frame_init").setText("")
             self.findChild(QLineEdit, "frame_fin").setText("")
 
             #####CONTROLEUR#####
@@ -516,7 +515,7 @@ class MyWindow(QtWidgets.QMainWindow):
             self.findChild(QComboBox, "liste_sequences").clear()
 
             self.findChild(QLineEdit, "frame_debut").setText("")
-            self.findChild(QLineEdit, "frame_init").setText("")
+            self.findChild(QLabel, "frame_init").setText("")
             self.findChild(QLineEdit, "frame_fin").setText("")
             
             #####CONTROLEUR#####
