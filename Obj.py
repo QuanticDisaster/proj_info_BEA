@@ -270,7 +270,8 @@ class Obj():
             if x != -1:
                 cv2.rectangle( binaryImage, (x,y), (x + w, y + h), 255, -1)
                 self.mask[i] = binaryImage
-
+                
+    #Enregistrement des masques tif et xml (NB : honnêtement sur windows, 2 fois sur 3 l'explorateur bloque l'écriture en disant qu'un autre processus utilise déjà le dossier/fichier)
     def exportMaskToFile(self, location = ""):
         """
         Enregistre les masques en attribut sur le disque dans le dossier location/mask/nom_objet
