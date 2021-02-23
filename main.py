@@ -215,6 +215,7 @@ class Controleur():
                     tracker à utiliser
                 
         """
+        print(" masquage idFrmeInit ?: ",seq["idFrameInit"])
         obj.maskSequence( seq["idFrameInit"], seq["initBB"], seq["idFrameBeginTrack"], seq["idFrameEndTrack"], tracker ) 
 
     def maskAll(self, tracker):
@@ -306,9 +307,9 @@ class Controleur():
         obj = self.getObjByName( self.vue.findChild(QComboBox, "liste_objets").currentText())
         seq = self.getSeqByName( obj, self.vue.findChild(QComboBox, "liste_sequences").currentText())
         seq["initBB"] = bbox
+        seq["idFrameInit"] = idFrame
 
         self.vue.updateInitFrame(idFrame)
-        
         
     def showFrame(self,frame):
         """
