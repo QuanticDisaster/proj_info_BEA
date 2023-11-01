@@ -20,11 +20,8 @@ De manière modulable, l'utilisateur peut un ou des objets. Chaque objet peut-ê
 
 En renseignant une frame d'initialisation, l'utilisateur peut encadrer l'objet d'intérêt
 
-![alt text](https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/initialisation_masque.png "initialisation")
-<img src="https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/initialisation_masque.png" width=50% height=50%>
+<img src="https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/initialisation_masque.png" width=75% height=75%>
 
-Le tracking démarre alors automatiquement.
+Le tracking démarre alors automatiquement. Une fois terminé, l'utilisateur peut exporter les masques séparément ou une fusion de ceux ci
 
-Une fois terminé, l'utilisateur peut exporter les masques séparément ou une fusion de ceux ci
-
-![alt text](https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/masques.png "masques")
+<img src="https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/masques.png" width=75% height=75%>
