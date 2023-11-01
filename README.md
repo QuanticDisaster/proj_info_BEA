@@ -20,7 +20,7 @@ De manière modulable, l'utilisateur peut un ou des objets. Chaque objet peut-ê
 
 En renseignant une frame d'initialisation, l'utilisateur peut encadrer l'objet d'intérêt
 
-![alt text](https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/initilisation_masque.png "initialisation")
+![alt text](https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/initialisation_masque.png "initialisation")
 
 Le tracking démarre alors automatiquement.
 
