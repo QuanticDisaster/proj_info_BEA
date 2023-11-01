@@ -4,11 +4,13 @@
 Dans le cadre de ses enquêtes le BEA est amené à traiter des vidéos d'accidents impliquant des aéronefs civils.
 L'étude de ces vidéos peut permettre de reconstruire la trajectoire des aéronefs par photogrammétrie. Seulement, les objets mobiles qui y apparaissent peuvent perturber la convergence des calculs.
 
-Le but de ce projet était donc de réaliser un outil de masquage automatique de ces élèments gênants.
+Le but de ce projet était donc de réaliser un outil de masquage automatique de ces élèments gênants ou de suivis de potentiels objets d'intérêt.
 
 ### Installation
 
 TODO
+
+L'interface graphique a été faite sous PyQt et le tracking video avec la librairie OpenCV.
 
 ### Fonctionnement
 
@@ -22,6 +24,6 @@ En renseignant une frame d'initialisation, l'utilisateur peut encadrer l'objet d
 
 <img src="https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/initialisation_masque.png" width=75% height=75%>
 
-Le tracking démarre alors automatiquement. Une fois terminé, l'utilisateur peut exporter les masques séparément ou une fusion de ceux ci
+Le tracking démarre alors automatiquement. Une fois terminé, l'utilisateur peut exporter les masques, séparément ou fusionnés, dans un format compatible avec le logiciel de photogrammétrie MicMac.
 
-<img src="https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/masques.png" width=75% height=75%>
+<img src="https://github.com/QuanticDisaster/proj_info_BEA/blob/main/doc/doc_github/masques.png" width=60% height=60%>
