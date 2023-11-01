@@ -6,6 +6,8 @@ L'étude de ces vidéos peut permettre de reconstruire la trajectoire des aéron
 
 Le but de ce projet était donc de réaliser un outil de masquage automatique de ces élèments gênants ou de suivis de potentiels objets d'intérêt.
 
+L'interface graphique a été faite sous PyQt et le tracking video avec la librairie OpenCV.
+
 ### Installation
 
 installer python 3.6 maximum (en raison de openCV)
@@ -25,7 +27,6 @@ pour ubuntu uniquement : installer python3-dev (attention à la sous version du 
 dans le terminal :
 pyinstaller --onefile -w main.py
 
-L'interface graphique a été faite sous PyQt et le tracking video avec la librairie OpenCV.
 
 ### Fonctionnement
 
