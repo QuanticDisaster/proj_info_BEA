@@ -16,7 +16,8 @@ Puis à l'aide de pip :
 
 lancer le script main.py
 
-####COMPILER EN EXECUTABLE#####
+##### COMPILER EN EXECUTABLE
+
 installer pyinstaller à l'aide de pip
 
 pour ubuntu uniquement : installer python3-dev (attention à la sous version du python sur laquelle c'est installé)
