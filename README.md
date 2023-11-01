@@ -8,7 +8,21 @@ Le but de ce projet était donc de réaliser un outil de masquage automatique de
 
 ### Installation
 
-TODO
+installer python 3.6 maximum (en raison de openCV)
+Puis à l'aide de pip :
+  * installer opencv-contrib-python version 3.4.2.17 ou moins (opencv4 non compatible)
+  * installer PyQt5 (version 15 mini)
+  * installer les autres dépendances (imutils)
+
+lancer le script main.py
+
+####COMPILER EN EXECUTABLE#####
+installer pyinstaller à l'aide de pip
+
+pour ubuntu uniquement : installer python3-dev (attention à la sous version du python sur laquelle c'est installé)
+
+dans le terminal :
+pyinstaller --onefile -w main.py
 
 L'interface graphique a été faite sous PyQt et le tracking video avec la librairie OpenCV.
 
